@@ -1,0 +1,81 @@
+html, body {
+  font-size: 16px;
+  margin: 0;
+}
+
+.sn-component {
+  user-select: auto !important;
+
+  .button-group .button {
+    vertical-align: middle;
+  }
+}
+
+.context-options {
+  margin-bottom: 10px;
+}
+
+table {
+  display: block;
+  width: 100%;
+  overflow: auto;
+  border-collapse: collapse;
+  border-spacing: 0px;
+  border-color: grey;
+  margin-bottom: 15px;
+
+  th, td {
+    padding: 6px 13px;
+    border: 1px solid #dfe2e5;
+  }
+
+  tr:nth-child(2n) {
+    background-color: #f6f6f6;
+  }
+}
+
+.table-item {
+  &.selected {
+    background-color: rgba(8, 109, 214, 0.1);
+  }
+  .selection-column {
+    label {
+      text-align: center;
+    }
+  }
+  .content-body {
+    .content-item {
+      margin-top: 4px;
+      margin-bottom: 8px;
+      .body {
+        /* These are technically the same, but use both */
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+
+        -ms-word-break: break-all;
+        /* This is the dangerous one in WebKit, as it breaks things wherever */
+        word-break: break-all;
+        /* Instead use this non-standard one: */
+        word-break: break-word;
+
+        /* Adds a hyphen where the word breaks, if supported (No Blink) */
+        -ms-hyphens: auto;
+        -moz-hyphens: auto;
+        -webkit-hyphens: auto;
+        hyphens: auto;
+      }
+    }
+  }
+}
+
+tr {
+  border: 1px solid gray;
+}
+
+.categories-options {
+  border-bottom: 1px solid rgba(black, 0.1);
+  padding-bottom: 15px;
+  margin-bottom: 10px;
+}
+
+@import '~stylekit';
