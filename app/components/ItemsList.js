@@ -9,7 +9,10 @@ export default class ItemsList extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({selectedItems: []});
+    for(var item of this.props.items) {
+      item.selected = false;
+    }
+    this.setState({selectedItems: [], selectState: false, duplicatesMode: false, duplicates: null});
   }
 
   deleteSelected() {
@@ -197,7 +200,7 @@ export default class ItemsList extends React.Component {
 class ItemRow extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {expanded: false};
   }
 
   _renderObject = (obj) => {
@@ -231,8 +234,12 @@ class ItemRow extends React.Component {
           </label>
         </td>
 
-        <td className="content-body">
-          {this._renderObject(item.content)}
+        <td>
+          <div
+            onClick={() => {this.setState({expanded: !this.state.expanded})}}
+            className={"content-body " + (this.state.expanded ? "expanded" : "")}>
+              {this._renderObject(item.content)}
+          </div>
         </td>
 
         <td>{item.created_at.toString()}</td>

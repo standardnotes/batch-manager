@@ -62,7 +62,7 @@ export default class BridgeManager {
 
   beginStreamingItems() {
     this._didBeginStreaming = true;
-    this.componentManager.streamItems(["Note", "Tag", "SN|Component", "SN|Theme", "SF|Extension", "Extension"], (items) => {
+    this.componentManager.streamItems(["Note", "Tag", "SN|Component", "SN|Theme", "SF|Extension", "Extension", "SF|MFA", "SN|Editor"], (items) => {
       for(var item of items) {
         if(item.deleted) {
           this.removeItemFromItems(item);

@@ -44,9 +44,18 @@ table {
     }
   }
   .content-body {
+
+    &.expanded {
+      max-height: none;
+    }
+
+    max-height: 100px;
+    overflow-y: scroll;
+
     .content-item {
       margin-top: 4px;
       margin-bottom: 8px;
+
       .body {
         /* These are technically the same, but use both */
         overflow-wrap: break-word;
@@ -75,7 +84,7 @@ tr {
 .categories-options {
   border-bottom: 1px solid rgba(black, 0.1);
   padding-bottom: 15px;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
 
 @import '~stylekit';

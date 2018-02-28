@@ -47,10 +47,6 @@ export default class Home extends React.Component {
             <ItemsList items={this.state.categories[this.state.selectedCategory]} contentType={this.state.selectedCategory} />
           }
         </div>
-
-        <div className="footer">
-
-        </div>
       </div>
     )
   }
