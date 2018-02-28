@@ -468,7 +468,9 @@ var BridgeManager = function () {
       };
 
       var value = mapping[type];
-      if (pluralize) {
+      if (!value) {
+        value = type;
+      } else if (pluralize) {
         value += "s";
       }
       return value;
@@ -2229,7 +2231,7 @@ var ItemRow = function (_React$Component2) {
         "div",
         null,
         Object.keys(obj).map(function (key) {
-          return _typeof(obj[key]) !== 'object' && _react2.default.createElement(
+          return obj[key] && _typeof(obj[key]) !== 'object' && _react2.default.createElement(
             "div",
             { className: "content-item", key: key },
             _react2.default.createElement(
@@ -2241,7 +2243,7 @@ var ItemRow = function (_React$Component2) {
             _react2.default.createElement(
               "span",
               { className: "body" },
-              obj[key]
+              typeof obj[key] == "boolean" ? JSON.stringify(obj[key]) : obj[key]
             )
           );
         })

@@ -120,7 +120,10 @@ export default class BridgeManager {
     }
 
     var value = mapping[type];
-    if(pluralize) {
+    if(!value) {
+      value = type;
+    }
+    else if(pluralize) {
       value += "s";
     }
     return value;

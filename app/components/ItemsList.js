@@ -208,10 +208,10 @@ class ItemRow extends React.Component {
     return (
       <div>
         {Object.keys(obj).map((key) =>
-          (typeof(obj[key]) !== 'object' &&
+          (obj[key] && typeof(obj[key]) !== 'object' &&
             <div className="content-item" key={key}>
               <strong className="key">{capitalizeFirstLetter(key)}: </strong>
-              <span className="body">{obj[key]}</span>
+              <span className="body">{typeof(obj[key]) == "boolean" ? JSON.stringify(obj[key]) : obj[key]}</span>
             </div>
           )
         )}
