@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 10);
+/******/ 	return __webpack_require__(__webpack_require__.s = 5);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -71,7 +71,7 @@
 
 
 if (true) {
-  module.exports = __webpack_require__(11);
+  module.exports = __webpack_require__(6);
 } else {
   module.exports = require('./cjs/react.development.js');
 }
@@ -79,437 +79,6 @@ if (true) {
 
 /***/ }),
 /* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _snComponentsApi = __webpack_require__(25);
-
-var _snComponentsApi2 = _interopRequireDefault(_snComponentsApi);
-
-var _Repo = __webpack_require__(2);
-
-var _Repo2 = _interopRequireDefault(_Repo);
-
-var _HttpManager = __webpack_require__(7);
-
-var _HttpManager2 = _interopRequireDefault(_HttpManager);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var BridgeManager = function () {
-  _createClass(BridgeManager, null, [{
-    key: "get",
-    value: function get() {
-      if (this.instance == null) {
-        this.instance = new BridgeManager();
-      }
-      return this.instance;
-    }
-
-    /* Singleton */
-
-  }]);
-
-  function BridgeManager(onReceieveItems) {
-    _classCallCheck(this, BridgeManager);
-
-    this.updateObservers = [];
-    this.items = [];
-    this.packages = [];
-    this.size = null;
-  }
-
-  _createClass(BridgeManager, [{
-    key: "initiateBridge",
-    value: function initiateBridge(onReady) {
-      this.componentManager = new _snComponentsApi2.default([], function () {
-        onReady && onReady();
-      });
-
-      this.componentManager.acceptsThemes = false;
-    }
-  }, {
-    key: "getItemAppDataValue",
-    value: function getItemAppDataValue(item, key) {
-      return this.componentManager.getItemAppDataValue(item, key);
-    }
-  }, {
-    key: "registerPackages",
-    value: function registerPackages(packages) {
-      this.packages = packages;
-    }
-  }, {
-    key: "latestPackageInfoForComponent",
-    value: function latestPackageInfoForComponent(component) {
-      return this.packages.find(function (p) {
-        return p.identifier == component.content.package_info.identifier;
-      });
-    }
-  }, {
-    key: "getSelfComponentUUID",
-    value: function getSelfComponentUUID() {
-      return this.componentManager.getSelfComponentUUID();
-    }
-  }, {
-    key: "didBeginStreaming",
-    value: function didBeginStreaming() {
-      return this._didBeginStreaming;
-    }
-  }, {
-    key: "beginStreamingItems",
-    value: function beginStreamingItems() {
-      var _this = this;
-
-      this._didBeginStreaming = true;
-      this.componentManager.streamItems(["SN|Component", "SN|Theme", "SF|Extension", "Extension"], function (items) {
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
-
-        try {
-          for (var _iterator = items[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var item = _step.value;
-
-            if (item.deleted) {
-              _this.removeItemFromItems(item);
-              continue;
-            }
-            if (item.isMetadataUpdate) {
-              continue;
-            }
-
-            var index = _this.indexOfItem(item);
-            if (index >= 0) {
-              _this.items[index] = item;
-            } else {
-              _this.items.push(item);
-            }
-          }
-        } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion && _iterator.return) {
-              _iterator.return();
-            }
-          } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
-            }
-          }
-        }
-
-        _this.notifyObserversOfUpdate();
-      });
-    }
-  }, {
-    key: "indexOfItem",
-    value: function indexOfItem(item) {
-      for (var index in this.items) {
-        if (this.items[index].uuid == item.uuid) {
-          return index;
-        }
-      }
-      return -1;
-    }
-  }, {
-    key: "removeItemFromItems",
-    value: function removeItemFromItems(item) {
-      this.items = this.items.filter(function (candidate) {
-        return candidate.uuid !== item.uuid;
-      });
-    }
-  }, {
-    key: "allInstalled",
-    value: function allInstalled() {
-      return this.items;
-    }
-  }, {
-    key: "notifyObserversOfUpdate",
-    value: function notifyObserversOfUpdate() {
-      var _iteratorNormalCompletion2 = true;
-      var _didIteratorError2 = false;
-      var _iteratorError2 = undefined;
-
-      try {
-        for (var _iterator2 = this.updateObservers[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-          var observer = _step2.value;
-
-          observer.callback();
-        }
-      } catch (err) {
-        _didIteratorError2 = true;
-        _iteratorError2 = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion2 && _iterator2.return) {
-            _iterator2.return();
-          }
-        } finally {
-          if (_didIteratorError2) {
-            throw _iteratorError2;
-          }
-        }
-      }
-
-      if (this.installedRepos.length > 0) {
-        if (this.size != "tall") {
-          this.size = "tall";
-          this.componentManager.setSize("container", 800, 700);
-        }
-      } else {
-        if (this.size != "short") {
-          this.componentManager.setSize("container", 800, 500);
-        }
-      }
-    }
-  }, {
-    key: "installRepoUrl",
-    value: function installRepoUrl(url) {
-      var urls = this.installedRepos.map(function (repo) {
-        return repo.url;
-      });
-      urls.push(url);
-      this.componentManager.setComponentDataValueForKey("repos", urls);
-      this.notifyObserversOfUpdate();
-    }
-  }, {
-    key: "uninstallRepo",
-    value: function uninstallRepo(repo) {
-      var urls = this.componentManager.componentDataValueForKey("repos") || [];
-      urls.splice(urls.indexOf(repo.url), 1);
-      this.componentManager.setComponentDataValueForKey("repos", urls);
-      this.notifyObserversOfUpdate();
-    }
-  }, {
-    key: "localComponentInstallationAvailable",
-    value: function localComponentInstallationAvailable() {
-      return this.componentManager.isRunningInDesktopApplication();
-    }
-  }, {
-    key: "itemForId",
-    value: function itemForId(uuid) {
-      return this.items.filter(function (item) {
-        return item.uuid == uuid;
-      })[0];
-    }
-  }, {
-    key: "addUpdateObserver",
-    value: function addUpdateObserver(callback) {
-      var observer = { id: Math.random, callback: callback };
-      this.updateObservers.push(observer);
-      return observer;
-    }
-  }, {
-    key: "removeUpdateObserver",
-    value: function removeUpdateObserver(observer) {
-      this.updateObservers.splice(this.updateObservers.indexOf(observer), 1);
-    }
-  }, {
-    key: "isPackageInstalled",
-    value: function isPackageInstalled(aPackage) {
-      return this.itemForPackage(aPackage);
-    }
-  }, {
-    key: "itemForPackage",
-    value: function itemForPackage(packageInfo) {
-      var result = this.items.find(function (item) {
-        if (!item.content.package_info) {
-          if (!item.content.url) {
-            return false;
-          }
-          // Legacy component without package_info, search by url or name
-          // We also check if the item content url contains the substring that is packageInfo, since
-          // newer URL formats remove extraneous query params from the end
-          return item.content.url == packageInfo.url || item.content.url.includes(packageInfo.url) || item.content.name == packageInfo.name;
-        }
-        return item.content.package_info && !item.deleted && item.content.package_info.identifier == packageInfo.identifier;
-      });
-      return result;
-    }
-  }, {
-    key: "downloadPackageDetails",
-    value: function downloadPackageDetails(url, callback) {
-      _HttpManager2.default.get().getAbsolute(url, {}, function (response) {
-        callback(response);
-      }, function (error) {
-        console.log("Error downloading package details", error);
-        callback(null, error || {});
-      });
-    }
-  }, {
-    key: "installPackageFromUrl",
-    value: function installPackageFromUrl(url, callback) {
-      var _this2 = this;
-
-      _HttpManager2.default.get().getAbsolute(url, {}, function (response) {
-        _this2.installPackage(response, function (component) {
-          callback(component);
-        });
-        callback(response);
-      }, function (error) {
-        console.log("Error installing from url", error);
-        callback(null, error || {});
-      });
-    }
-  }, {
-    key: "installPackage",
-    value: function installPackage(aPackage, callback) {
-      var data = this.createComponentDataForPackage(aPackage);
-      this.componentManager.createItem(data, function (component) {
-        callback && callback(component);
-      });
-    }
-  }, {
-    key: "saveItems",
-    value: function saveItems(items, callback) {
-      this.componentManager.saveItems(items, function () {
-        callback && callback();
-      });
-    }
-  }, {
-    key: "createComponentDataForPackage",
-    value: function createComponentDataForPackage(aPackage) {
-      return {
-        content_type: aPackage.content_type,
-        content: {
-          identifier: aPackage.identifier,
-          name: aPackage.name,
-          hosted_url: aPackage.url,
-          url: aPackage.url,
-          local_url: null,
-          area: aPackage.area,
-          package_info: aPackage,
-          valid_until: aPackage.valid_until
-        }
-      };
-    }
-  }, {
-    key: "uninstallPackage",
-    value: function uninstallPackage(aPackage) {
-      var item = this.itemForPackage(aPackage);
-      this.uninstallComponent(item);
-    }
-  }, {
-    key: "uninstallComponent",
-    value: function uninstallComponent(component) {
-      this.componentManager.deleteItem(component);
-    }
-  }, {
-    key: "updateComponent",
-    value: function updateComponent(component) {
-      var _this3 = this;
-
-      var latestPackageInfo = this.latestPackageInfoForComponent(component);;
-
-      component.content.package_info.download_url = latestPackageInfo.download_url;
-
-      this.componentManager.saveItems([component], function () {
-        _this3.componentManager.sendCustomEvent("install-local-component", component, function (installedComponent) {});
-      });
-    }
-  }, {
-    key: "uninstallPackageOffline",
-    value: function uninstallPackageOffline(aPackage) {
-      var item = this.itemForPackage(aPackage, true);
-      this.componentManager.deleteItem(item);
-    }
-  }, {
-    key: "toggleOpenEvent",
-    value: function toggleOpenEvent(component) {
-      this.componentManager.sendCustomEvent("toggle-activate-component", component);
-    }
-  }, {
-    key: "humanReadableTitleForExtensionType",
-    value: function humanReadableTitleForExtensionType(type, pluralize) {
-      var mapping = {
-        "Extension": "Action",
-        "SF|Extension": "Server Extension",
-        "SN|Theme": "Theme",
-        "SN|Editor": "Editor",
-        "SN|Component": "Component"
-      };
-
-      var value = mapping[type];
-      if (pluralize) {
-        value += "s";
-      }
-      return value;
-    }
-  }, {
-    key: "nameForNamelessServerExtension",
-    value: function nameForNamelessServerExtension(extension) {
-      var url = extension.content.url;
-      if (!url) {
-        return null;
-      }
-
-      if (url.includes("gdrive")) {
-        return "Google Drive Sync";
-      } else if (url.includes("file_attacher")) {
-        return "File Attacher";
-      } else if (url.includes("onedrive")) {
-        return "OneDrive Sync";
-      } else if (url.includes("backup.email_archive")) {
-        return "Daily Email Backups";
-      } else if (url.includes("dropbox")) {
-        return "Dropbox Sync";
-      } else if (url.includes("revisions")) {
-        return "Revision History";
-      } else {
-        return null;
-      }
-    }
-  }, {
-    key: "installedRepos",
-    get: function get() {
-      var urls = this.componentManager.componentDataValueForKey("repos") || [];
-      return urls.map(function (url) {
-        return new _Repo2.default(url);
-      });
-    }
-  }]);
-
-  return BridgeManager;
-}();
-
-BridgeManager.instance = null;
-exports.default = BridgeManager;
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Repo = function Repo(url) {
-  _classCallCheck(this, Repo);
-
-  this.url = url;
-};
-
-exports.default = Repo;
-
-/***/ }),
-/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -551,55 +120,7 @@ emptyFunction.thatReturnsArgument = function (arg) {
 module.exports = emptyFunction;
 
 /***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _HttpManager = __webpack_require__(7);
-
-var _HttpManager2 = _interopRequireDefault(_HttpManager);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var RepoController = function () {
-  function RepoController(props) {
-    _classCallCheck(this, RepoController);
-
-    this.repo = props.repo;
-  }
-
-  _createClass(RepoController, [{
-    key: "getPackages",
-    value: function getPackages(callback) {
-      var _this = this;
-
-      _HttpManager2.default.get().getAbsolute(this.repo.url, {}, function (response) {
-        _this.response = response;
-        callback(response.packages);
-      }, function (error) {
-        console.log("Error loading repo", error);
-        callback(null, error || {});
-      });
-    }
-  }]);
-
-  return RepoController;
-}();
-
-exports.default = RepoController;
-
-/***/ }),
-/* 5 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -696,7 +217,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 
 
 /***/ }),
-/* 6 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -719,7 +240,7 @@ if (false) {
 module.exports = emptyObject;
 
 /***/ }),
-/* 7 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -731,77 +252,20 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _snComponentsApi = __webpack_require__(19);
+
+var _snComponentsApi2 = _interopRequireDefault(_snComponentsApi);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var HttpManager = function () {
-  function HttpManager() {
-    _classCallCheck(this, HttpManager);
-  }
-
-  _createClass(HttpManager, [{
-    key: "postAbsolute",
-    value: function postAbsolute(url, params, onsuccess, onerror) {
-      this.httpRequest("post", url, params, onsuccess, onerror);
-    }
-  }, {
-    key: "patchAbsolute",
-    value: function patchAbsolute(url, params, onsuccess, onerror) {
-      this.httpRequest("patch", url, params, onsuccess, onerror);
-    }
-  }, {
-    key: "getAbsolute",
-    value: function getAbsolute(url, params, onsuccess, onerror) {
-      this.httpRequest("get", url, params, onsuccess, onerror);
-    }
-  }, {
-    key: "httpRequest",
-    value: function httpRequest(verb, url, params, onsuccess, onerror) {
-
-      var xmlhttp = new XMLHttpRequest();
-
-      xmlhttp.onreadystatechange = function () {
-        if (xmlhttp.readyState == 4) {
-          var response = xmlhttp.responseText;
-          if (response) {
-            try {
-              response = JSON.parse(response);
-            } catch (e) {}
-          }
-
-          if (xmlhttp.status >= 200 && xmlhttp.status <= 299) {
-            onsuccess(response);
-          } else {
-            console.error("Request error:", response);
-            onerror(response);
-          }
-        }
-      }.bind(this);
-
-      if (verb == "get" && Object.keys(params).length > 0) {
-        url = url + this.formatParams(params);
-      }
-
-      xmlhttp.open(verb, url, true);
-      xmlhttp.setRequestHeader('Content-type', 'application/json');
-
-      if (verb == "post" || verb == "patch") {
-        xmlhttp.send(JSON.stringify(params));
-      } else {
-        xmlhttp.send();
-      }
-    }
-  }, {
-    key: "formatParams",
-    value: function formatParams(params) {
-      return "?" + Object.keys(params).map(function (key) {
-        return key + "=" + encodeURIComponent(params[key]);
-      }).join("&");
-    }
-  }], [{
+var BridgeManager = function () {
+  _createClass(BridgeManager, null, [{
     key: "get",
     value: function get() {
       if (this.instance == null) {
-        this.instance = new HttpManager();
+        this.instance = new BridgeManager();
       }
       return this.instance;
     }
@@ -810,502 +274,215 @@ var HttpManager = function () {
 
   }]);
 
-  return HttpManager;
+  function BridgeManager(onReceieveItems) {
+    _classCallCheck(this, BridgeManager);
+
+    this.updateObservers = [];
+    this.items = [];
+    this.size = null;
+  }
+
+  _createClass(BridgeManager, [{
+    key: "addUpdateObserver",
+    value: function addUpdateObserver(callback) {
+      var observer = { id: Math.random, callback: callback };
+      this.updateObservers.push(observer);
+      return observer;
+    }
+  }, {
+    key: "removeUpdateObserver",
+    value: function removeUpdateObserver(observer) {
+      this.updateObservers.splice(this.updateObservers.indexOf(observer), 1);
+    }
+  }, {
+    key: "initiateBridge",
+    value: function initiateBridge(onReady) {
+      this.componentManager = new _snComponentsApi2.default([], function () {
+        onReady && onReady();
+      });
+
+      this.componentManager.acceptsThemes = false;
+
+      this.componentManager.setSize("container", 1000, 800);
+    }
+  }, {
+    key: "getItemAppDataValue",
+    value: function getItemAppDataValue(item, key) {
+      return this.componentManager.getItemAppDataValue(item, key);
+    }
+  }, {
+    key: "getSelfComponentUUID",
+    value: function getSelfComponentUUID() {
+      return this.componentManager.getSelfComponentUUID();
+    }
+  }, {
+    key: "didBeginStreaming",
+    value: function didBeginStreaming() {
+      return this._didBeginStreaming;
+    }
+  }, {
+    key: "categorizedItems",
+    value: function categorizedItems() {
+      var types = {};
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = this.items[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var item = _step.value;
+
+          var array = types[item.content_type];
+          if (!array) {
+            array = [];
+            types[item.content_type] = array;
+          }
+          array.push(item);
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
+
+      return types;
+    }
+  }, {
+    key: "beginStreamingItems",
+    value: function beginStreamingItems() {
+      var _this = this;
+
+      this._didBeginStreaming = true;
+      this.componentManager.streamItems(["Note", "Tag", "SN|Component", "SN|Theme", "SF|Extension", "Extension"], function (items) {
+        var _iteratorNormalCompletion2 = true;
+        var _didIteratorError2 = false;
+        var _iteratorError2 = undefined;
+
+        try {
+          for (var _iterator2 = items[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+            var item = _step2.value;
+
+            if (item.deleted) {
+              _this.removeItemFromItems(item);
+              continue;
+            }
+            if (item.isMetadataUpdate) {
+              continue;
+            }
+
+            var index = _this.indexOfItem(item);
+            if (index >= 0) {
+              _this.items[index] = item;
+            } else {
+              _this.items.push(item);
+            }
+          }
+        } catch (err) {
+          _didIteratorError2 = true;
+          _iteratorError2 = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion2 && _iterator2.return) {
+              _iterator2.return();
+            }
+          } finally {
+            if (_didIteratorError2) {
+              throw _iteratorError2;
+            }
+          }
+        }
+
+        _this.notifyObserversOfUpdate();
+      });
+    }
+  }, {
+    key: "indexOfItem",
+    value: function indexOfItem(item) {
+      for (var index in this.items) {
+        if (this.items[index].uuid == item.uuid) {
+          return index;
+        }
+      }
+      return -1;
+    }
+  }, {
+    key: "deleteItems",
+    value: function deleteItems(items) {
+      this.componentManager.deleteItems(items);
+    }
+  }, {
+    key: "removeItemFromItems",
+    value: function removeItemFromItems(item) {
+      this.items = this.items.filter(function (candidate) {
+        return candidate.uuid !== item.uuid;
+      });
+    }
+  }, {
+    key: "notifyObserversOfUpdate",
+    value: function notifyObserversOfUpdate() {
+      var _iteratorNormalCompletion3 = true;
+      var _didIteratorError3 = false;
+      var _iteratorError3 = undefined;
+
+      try {
+        for (var _iterator3 = this.updateObservers[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+          var observer = _step3.value;
+
+          observer.callback();
+        }
+      } catch (err) {
+        _didIteratorError3 = true;
+        _iteratorError3 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion3 && _iterator3.return) {
+            _iterator3.return();
+          }
+        } finally {
+          if (_didIteratorError3) {
+            throw _iteratorError3;
+          }
+        }
+      }
+    }
+  }, {
+    key: "humanReadableTitleForExtensionType",
+    value: function humanReadableTitleForExtensionType(type, pluralize) {
+      var mapping = {
+        "Note": "Note",
+        "Tag": "Tag",
+        "Extension": "Action",
+        "SF|Extension": "Server Extension",
+        "SN|Theme": "Theme",
+        "SN|Editor": "Editor",
+        "SN|Component": "Component"
+      };
+
+      var value = mapping[type];
+      if (pluralize) {
+        value += "s";
+      }
+      return value;
+    }
+  }]);
+
+  return BridgeManager;
 }();
 
-HttpManager.instance = null;
-exports.default = HttpManager;
+BridgeManager.instance = null;
+exports.default = BridgeManager;
 
 /***/ }),
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(0);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _Repo = __webpack_require__(2);
-
-var _Repo2 = _interopRequireDefault(_Repo);
-
-var _RepoController = __webpack_require__(4);
-
-var _RepoController2 = _interopRequireDefault(_RepoController);
-
-var _BridgeManager = __webpack_require__(1);
-
-var _BridgeManager2 = _interopRequireDefault(_BridgeManager);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var compareVersions = __webpack_require__(26);
-
-var PackageView = function (_React$Component) {
-  _inherits(PackageView, _React$Component);
-
-  function PackageView(props) {
-    _classCallCheck(this, PackageView);
-
-    var _this = _possibleConstructorReturn(this, (PackageView.__proto__ || Object.getPrototypeOf(PackageView)).call(this, props));
-
-    _this.togglePackageInstallation = function () {
-      if (_this.props.component) {
-        _BridgeManager2.default.get().uninstallComponent(_this.props.component);
-      } else {
-        if (_BridgeManager2.default.get().isPackageInstalled(_this.packageInfo)) {
-          _BridgeManager2.default.get().uninstallPackage(_this.packageInfo);
-        } else {
-          _BridgeManager2.default.get().installPackage(_this.packageInfo);
-        }
-      }
-    };
-
-    _this.openComponent = function () {
-      _BridgeManager2.default.get().toggleOpenEvent(_this.component);
-    };
-
-    _this.updateComponent = function () {
-      _BridgeManager2.default.get().updateComponent(_this.component);
-    };
-
-    _this.openUrl = function (url) {
-      var win = window.open(url, '_blank');
-      win.focus();
-    };
-
-    _this.toggleOptions = function () {
-      _this.setState({ showOptions: !_this.state.showOptions });
-    };
-
-    _this.toggleRename = function () {
-      _this.setState(function (prevState) {
-        if (prevState.rename) {
-          return { rename: false, renameValue: null };
-        } else {
-          return { rename: true, renameValue: _this.component.content.name };
-        }
-      });
-
-      setTimeout(function () {
-        if (_this.state.rename) {
-          _this.nameInput.focus();
-          _this.nameInput.select();
-        }
-      }, 10);
-    };
-
-    _this.handleKeyPress = function (e) {
-      if (e.key === 'Enter') {
-        _this.toggleRename();
-        var name = _this.state.renameValue;
-        if (name.length > 0) {
-          _this.component.content.name = name;
-          _BridgeManager2.default.get().saveItems([_this.component]);
-        }
-      }
-    };
-
-    _this.toggleComponentOption = function (option) {
-      _this.component.content[option] = !_this.component.content[option];
-      _BridgeManager2.default.get().saveItems([_this.component]);
-    };
-
-    _this.handleChange = function (event) {
-      _this.setState({ renameValue: event.target.value });
-    };
-
-    _this.state = { packageInfo: props.packageInfo, component: props.component };
-    return _this;
-  }
-
-  _createClass(PackageView, [{
-    key: "render",
-    value: function render() {
-      var _this2 = this;
-
-      var packageInfo = this.state.packageInfo || this.component.content.package_info || this.component.content;
-      var component = this.component;
-      var showOpenOption = component && ["rooms", "modal"].includes(component.content.area);
-      var showActivateOption = component && ["SN|Theme", "SN|Component"].includes(component.content_type) && !showOpenOption && !["editor-editor"].includes(component.content.area);
-
-      if (component && _BridgeManager2.default.get().getSelfComponentUUID() == component.uuid) {
-        // Is Extensions Manager (self)
-        showOpenOption = false, showActivateOption = false;
-      }
-
-      var updateAvailable = false,
-          installedVersion;
-      var isDesktop = _BridgeManager2.default.get().localComponentInstallationAvailable();
-      var componentPackageInfo = component && component.content.package_info;
-
-      // Server based and action extensions do not neccessarily need to have package info, as they are fully hosted.
-      // We use this flag to hide the "Unable to find package info" error
-      var shouldHavePackageInfo = component && !["SF|Extension", "Extension"].includes(component.content_type);
-
-      var installError = component && _BridgeManager2.default.get().getItemAppDataValue(component, "installError");
-
-      // Whether this package support local installation
-      var localInstallable = packageInfo.download_url;
-
-      var isComponentActive = component && component.content.active;
-
-      if (isDesktop && componentPackageInfo && localInstallable && componentPackageInfo.version) {
-        var latestVersion = packageInfo.version;
-        var latestPackageInfo = _BridgeManager2.default.get().latestPackageInfoForComponent(component);
-        if (latestPackageInfo) {
-          latestVersion = latestPackageInfo.version;
-        }
-        installedVersion = componentPackageInfo.version;
-        updateAvailable = compareVersions(latestVersion, installedVersion) == 1;
-      }
-
-      // Legacy server extensions without name
-      if (component && !component.content.name && component.content_type == "SF|Extension") {
-        var name = _BridgeManager2.default.get().nameForNamelessServerExtension(component);
-        if (name) {
-          component.content.name = name;
-        }
-      }
-
-      var displayName = component ? component.content.name : packageInfo.name;
-
-      return [_react2.default.createElement(
-        "div",
-        { className: "item-content" },
-        _react2.default.createElement(
-          "div",
-          { className: "item-column stretch" },
-          packageInfo.thumbnail_url && !this.props.hideMeta && _react2.default.createElement("img", { src: packageInfo.thumbnail_url }),
-          _react2.default.createElement("input", {
-            ref: function ref(input) {
-              _this2.nameInput = input;
-            },
-            type: "text",
-            className: "panel-row disguised name-input",
-            disabled: !this.state.rename,
-            value: this.state.renameValue || displayName,
-            onKeyPress: this.handleKeyPress,
-            onChange: this.handleChange
-          }),
-          component && installError && _react2.default.createElement(
-            "div",
-            { className: "notification warning package-notification" },
-            _react2.default.createElement(
-              "div",
-              { className: "text" },
-              "Error installing locally: ",
-              installError.tag,
-              " ",
-              packageInfo.download_url
-            )
-          ),
-          component && !componentPackageInfo && shouldHavePackageInfo && _react2.default.createElement(
-            "div",
-            { className: "notification default package-notification", onClick: function onClick() {
-                _this2.setState({ componentWarningExpanded: !_this2.state.componentWarningExpanded });
-              } },
-            _react2.default.createElement(
-              "div",
-              { className: "text" },
-              "Unable to find corresponding package information.",
-              this.state.componentWarningExpanded ? _react2.default.createElement(
-                "span",
-                null,
-                " Please uninstall this extension, then reinstall to enable local installation and updates."
-              ) : null
-            )
-          ),
-          !this.props.hideMeta && _react2.default.createElement(
-            "div",
-            { className: "panel-row" },
-            _react2.default.createElement(
-              "p",
-              null,
-              packageInfo.description
-            )
-          )
-        )
-      ), _react2.default.createElement(
-        "div",
-        { className: "item-footer" },
-        _react2.default.createElement(
-          "div",
-          { className: "button-group" },
-          !component && _react2.default.createElement(
-            "div",
-            { className: "button info", onClick: this.togglePackageInstallation },
-            "Install"
-          ),
-          showOpenOption && _react2.default.createElement(
-            "div",
-            { className: "button success", onClick: this.openComponent },
-            "Open"
-          ),
-          showActivateOption && _react2.default.createElement(
-            "div",
-            { className: "button " + (isComponentActive ? "warning" : "success"), onClick: this.openComponent },
-            isComponentActive ? "Deactivate" : "Activate"
-          ),
-          isDesktop && updateAvailable && _react2.default.createElement(
-            "div",
-            { className: "button info", onClick: this.updateComponent },
-            "Update"
-          ),
-          component && _react2.default.createElement(
-            "div",
-            { className: "button danger", onClick: this.togglePackageInstallation },
-            "Uninstall"
-          ),
-          component && componentPackageInfo && _react2.default.createElement(
-            "div",
-            { className: "button default", onClick: this.toggleOptions },
-            "\u2022\u2022\u2022"
-          ),
-          packageInfo.marketing_url && _react2.default.createElement(
-            "div",
-            { className: "button default", onClick: function onClick() {
-                _this2.openUrl(packageInfo.marketing_url);
-              } },
-            "Info"
-          )
-        ),
-        this.state.showOptions && component && _react2.default.createElement(
-          "div",
-          { className: "notification default item-advanced-options" },
-          isDesktop && localInstallable && _react2.default.createElement(
-            "div",
-            null,
-            component && _react2.default.createElement(
-              "p",
-              { className: "panel-row" },
-              "Installed Version: ",
-              installedVersion
-            ),
-            _react2.default.createElement(
-              "p",
-              { className: "panel-row" },
-              "Latest Version: ",
-              latestVersion
-            )
-          ),
-          localInstallable && _react2.default.createElement(
-            "div",
-            null,
-            _react2.default.createElement(
-              "label",
-              null,
-              _react2.default.createElement("input", { disabled: !localInstallable, checked: localInstallable && !component.content.autoupdateDisabled, onChange: function onChange() {
-                  _this2.toggleComponentOption('autoupdateDisabled');
-                }, type: "checkbox" }),
-              "Autoupdate local installation"
-            ),
-            _react2.default.createElement(
-              "label",
-              null,
-              _react2.default.createElement("input", { disabled: !localInstallable, checked: localInstallable && !component.content.offlineOnly, onChange: function onChange() {
-                  _this2.toggleComponentOption('offlineOnly');
-                }, type: "checkbox" }),
-              "Use hosted when local is unavailable"
-            )
-          ),
-          !localInstallable && _react2.default.createElement(
-            "p",
-            { className: "panel-row" },
-            "This extension does not support local installation."
-          ),
-          _react2.default.createElement(
-            "a",
-            { className: "info", onClick: this.toggleRename },
-            this.state.rename ? 'Press enter to submit' : 'Rename'
-          )
-        )
-      )];
-    }
-  }, {
-    key: "packageInfo",
-    get: function get() {
-      return this.state.packageInfo;
-    }
-  }, {
-    key: "component",
-    get: function get() {
-      return this.props.component || _BridgeManager2.default.get().itemForPackage(this.props.packageInfo);
-    }
-  }]);
-
-  return PackageView;
-}(_react2.default.Component);
-
-exports.default = PackageView;
-
-/***/ }),
-/* 9 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(0);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _BridgeManager = __webpack_require__(1);
-
-var _BridgeManager2 = _interopRequireDefault(_BridgeManager);
-
-var _PackageView = __webpack_require__(8);
-
-var _PackageView2 = _interopRequireDefault(_PackageView);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var ManageInstalled = function (_React$Component) {
-  _inherits(ManageInstalled, _React$Component);
-
-  function ManageInstalled(props) {
-    _classCallCheck(this, ManageInstalled);
-
-    var _this = _possibleConstructorReturn(this, (ManageInstalled.__proto__ || Object.getPrototypeOf(ManageInstalled)).call(this, props));
-
-    _this.uninstallExt = function (ext) {
-      _BridgeManager2.default.get().uninstallComponent(ext);
-    };
-
-    _this.renameExt = function (ext) {};
-
-    _this.category = function (title, extensions) {
-      extensions = extensions.sort(function (a, b) {
-        return a.content.name > b.content.name;
-      });
-      return _react2.default.createElement(
-        "div",
-        { className: "panel-section" },
-        _react2.default.createElement(
-          "h4",
-          { className: "title panel-row" },
-          title,
-          " (",
-          extensions.length,
-          ")"
-        ),
-        _react2.default.createElement(
-          "div",
-          { className: "packages panel-table panel-row" },
-          extensions.map(function (ext, index) {
-            return _react2.default.createElement(
-              "div",
-              { className: "package table-item" },
-              _react2.default.createElement(_PackageView2.default, { key: ext.uuid, component: ext, hideMeta: true })
-            );
-          })
-        )
-      );
-    };
-
-    _BridgeManager2.default.get().beginStreamingItems();
-
-    _this.updateObserver = _BridgeManager2.default.get().addUpdateObserver(function () {
-      _this.reload();
-    });
-    return _this;
-  }
-
-  _createClass(ManageInstalled, [{
-    key: "componentWillUnmount",
-    value: function componentWillUnmount() {
-      _BridgeManager2.default.get().removeUpdateObserver(this.updateObserver);
-    }
-  }, {
-    key: "reload",
-    value: function reload() {
-      this.forceUpdate();
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      var extensions = _BridgeManager2.default.get().allInstalled();
-      var themes = extensions.filter(function (candidate) {
-        return candidate.content_type == "SN|Theme" || candidate.content.area == "themes";
-      });
-      var editors = extensions.filter(function (candidate) {
-        return candidate.content.area == "editor-editor";
-      });
-      var components = extensions.filter(function (candidate) {
-        return candidate.content_type == "SN|Component" && candidate.content.area != "editor-editor";
-      });
-      var serverExtensions = extensions.filter(function (candidate) {
-        return candidate.content_type == "SF|Extension";
-      });
-      var actions = extensions.filter(function (candidate) {
-        return candidate.content_type == "Extension";
-      });
-      var other = extensions.subtract(themes).subtract(editors).subtract(components).subtract(serverExtensions).subtract(actions);
-
-      return _react2.default.createElement(
-        "div",
-        { className: "panel-section no-border" },
-        _react2.default.createElement(
-          "div",
-          { className: "panel-row" },
-          _react2.default.createElement(
-            "h3",
-            { className: "title" },
-            "Installed Extensions (",
-            extensions.length,
-            ")"
-          )
-        ),
-        themes.length > 0 && this.category("Themes", themes),
-        components.length > 0 && this.category("Components", components),
-        editors.length > 0 && this.category("Editors", editors),
-        actions.length > 0 && this.category("Actions", actions),
-        serverExtensions.length > 0 && this.category("Server Extensions", serverExtensions),
-        other.length > 0 && this.category("Other", other)
-      );
-    }
-  }]);
-
-  return ManageInstalled;
-}(_react2.default.Component);
-
-exports.default = ManageInstalled;
-
-
-Array.prototype.subtract = function (a) {
-  return this.filter(function (i) {
-    return a.indexOf(i) < 0;
-  });
-};
-
-/***/ }),
-/* 10 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1315,11 +492,11 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactDom = __webpack_require__(12);
+var _reactDom = __webpack_require__(7);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _App = __webpack_require__(22);
+var _App = __webpack_require__(17);
 
 var _App2 = _interopRequireDefault(_App);
 
@@ -1380,7 +557,7 @@ if (!Array.prototype.includes) {
 }
 
 /***/ }),
-/* 11 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1393,7 +570,7 @@ if (!Array.prototype.includes) {
  * LICENSE file in the root directory of this source tree.
  */
 
-var m=__webpack_require__(5),n=__webpack_require__(6),p=__webpack_require__(3),q="function"===typeof Symbol&&Symbol["for"],r=q?Symbol["for"]("react.element"):60103,t=q?Symbol["for"]("react.call"):60104,u=q?Symbol["for"]("react.return"):60105,v=q?Symbol["for"]("react.portal"):60106,w=q?Symbol["for"]("react.fragment"):60107,x="function"===typeof Symbol&&Symbol.iterator;
+var m=__webpack_require__(2),n=__webpack_require__(3),p=__webpack_require__(1),q="function"===typeof Symbol&&Symbol["for"],r=q?Symbol["for"]("react.element"):60103,t=q?Symbol["for"]("react.call"):60104,u=q?Symbol["for"]("react.return"):60105,v=q?Symbol["for"]("react.portal"):60106,w=q?Symbol["for"]("react.fragment"):60107,x="function"===typeof Symbol&&Symbol.iterator;
 function y(a){for(var b=arguments.length-1,e="Minified React error #"+a+"; visit http://facebook.github.io/react/docs/error-decoder.html?invariant\x3d"+a,c=0;c<b;c++)e+="\x26args[]\x3d"+encodeURIComponent(arguments[c+1]);b=Error(e+" for the full message or use the non-minified dev environment for full errors and additional helpful warnings.");b.name="Invariant Violation";b.framesToPop=1;throw b;}
 var z={isMounted:function(){return!1},enqueueForceUpdate:function(){},enqueueReplaceState:function(){},enqueueSetState:function(){}};function A(a,b,e){this.props=a;this.context=b;this.refs=n;this.updater=e||z}A.prototype.isReactComponent={};A.prototype.setState=function(a,b){"object"!==typeof a&&"function"!==typeof a&&null!=a?y("85"):void 0;this.updater.enqueueSetState(this,a,b,"setState")};A.prototype.forceUpdate=function(a){this.updater.enqueueForceUpdate(this,a,"forceUpdate")};
 function B(a,b,e){this.props=a;this.context=b;this.refs=n;this.updater=e||z}function C(){}C.prototype=A.prototype;var D=B.prototype=new C;D.constructor=B;m(D,A.prototype);D.isPureReactComponent=!0;function E(a,b,e){this.props=a;this.context=b;this.refs=n;this.updater=e||z}var F=E.prototype=new C;F.constructor=E;m(F,A.prototype);F.unstable_isAsyncReactComponent=!0;F.render=function(){return this.props.children};var G={current:null},H=Object.prototype.hasOwnProperty,I={key:!0,ref:!0,__self:!0,__source:!0};
@@ -1408,7 +585,7 @@ isValidElement:K,version:"16.2.0",__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_F
 
 
 /***/ }),
-/* 12 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1446,14 +623,14 @@ if (true) {
   // DCE check should happen before ReactDOM bundle executes so that
   // DevTools can report bad minification during injection.
   checkDCE();
-  module.exports = __webpack_require__(13);
+  module.exports = __webpack_require__(8);
 } else {
   module.exports = require('./cjs/react-dom.development.js');
 }
 
 
 /***/ }),
-/* 13 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1469,7 +646,7 @@ if (true) {
 /*
  Modernizr 3.0.0pre (Custom Build) | MIT
 */
-var aa=__webpack_require__(0),l=__webpack_require__(14),B=__webpack_require__(5),C=__webpack_require__(3),ba=__webpack_require__(15),da=__webpack_require__(16),ea=__webpack_require__(17),fa=__webpack_require__(18),ia=__webpack_require__(21),D=__webpack_require__(6);
+var aa=__webpack_require__(0),l=__webpack_require__(9),B=__webpack_require__(2),C=__webpack_require__(1),ba=__webpack_require__(10),da=__webpack_require__(11),ea=__webpack_require__(12),fa=__webpack_require__(13),ia=__webpack_require__(16),D=__webpack_require__(3);
 function E(a){for(var b=arguments.length-1,c="Minified React error #"+a+"; visit http://facebook.github.io/react/docs/error-decoder.html?invariant\x3d"+a,d=0;d<b;d++)c+="\x26args[]\x3d"+encodeURIComponent(arguments[d+1]);b=Error(c+" for the full message or use the non-minified dev environment for full errors and additional helpful warnings.");b.name="Invariant Violation";b.framesToPop=1;throw b;}aa?void 0:E("227");
 var oa={children:!0,dangerouslySetInnerHTML:!0,defaultValue:!0,defaultChecked:!0,innerHTML:!0,suppressContentEditableWarning:!0,suppressHydrationWarning:!0,style:!0};function pa(a,b){return(a&b)===b}
 var ta={MUST_USE_PROPERTY:1,HAS_BOOLEAN_VALUE:4,HAS_NUMERIC_VALUE:8,HAS_POSITIVE_NUMERIC_VALUE:24,HAS_OVERLOADED_BOOLEAN_VALUE:32,HAS_STRING_BOOLEAN_VALUE:64,injectDOMPropertyConfig:function(a){var b=ta,c=a.Properties||{},d=a.DOMAttributeNamespaces||{},e=a.DOMAttributeNames||{};a=a.DOMMutationMethods||{};for(var f in c){ua.hasOwnProperty(f)?E("48",f):void 0;var g=f.toLowerCase(),h=c[f];g={attributeName:g,attributeNamespace:null,propertyName:f,mutationMethod:null,mustUseProperty:pa(h,b.MUST_USE_PROPERTY),
@@ -1689,7 +866,7 @@ Z.injectIntoDevTools({findFiberByHostInstance:pb,bundleType:0,version:"16.2.0",r
 
 
 /***/ }),
-/* 14 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1728,7 +905,7 @@ var ExecutionEnvironment = {
 module.exports = ExecutionEnvironment;
 
 /***/ }),
-/* 15 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1743,7 +920,7 @@ module.exports = ExecutionEnvironment;
  * @typechecks
  */
 
-var emptyFunction = __webpack_require__(3);
+var emptyFunction = __webpack_require__(1);
 
 /**
  * Upstream version of event listener. Does not take into account specific
@@ -1808,7 +985,7 @@ var EventListener = {
 module.exports = EventListener;
 
 /***/ }),
-/* 16 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1850,7 +1027,7 @@ function getActiveElement(doc) /*?DOMElement*/{
 module.exports = getActiveElement;
 
 /***/ }),
-/* 17 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1921,7 +1098,7 @@ function shallowEqual(objA, objB) {
 module.exports = shallowEqual;
 
 /***/ }),
-/* 18 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1936,7 +1113,7 @@ module.exports = shallowEqual;
  * 
  */
 
-var isTextNode = __webpack_require__(19);
+var isTextNode = __webpack_require__(14);
 
 /*eslint-disable no-bitwise */
 
@@ -1964,7 +1141,7 @@ function containsNode(outerNode, innerNode) {
 module.exports = containsNode;
 
 /***/ }),
-/* 19 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1979,7 +1156,7 @@ module.exports = containsNode;
  * @typechecks
  */
 
-var isNode = __webpack_require__(20);
+var isNode = __webpack_require__(15);
 
 /**
  * @param {*} object The object to check.
@@ -1992,7 +1169,7 @@ function isTextNode(object) {
 module.exports = isTextNode;
 
 /***/ }),
-/* 20 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2020,7 +1197,7 @@ function isNode(object) {
 module.exports = isNode;
 
 /***/ }),
-/* 21 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2050,7 +1227,7 @@ function focusNode(node) {
 module.exports = focusNode;
 
 /***/ }),
-/* 22 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2066,7 +1243,7 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _Home = __webpack_require__(23);
+var _Home = __webpack_require__(18);
 
 var _Home2 = _interopRequireDefault(_Home);
 
@@ -2104,7 +1281,7 @@ var App = function (_React$Component) {
 exports.default = App;
 
 /***/ }),
-/* 23 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2120,29 +1297,13 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _Repo = __webpack_require__(2);
-
-var _Repo2 = _interopRequireDefault(_Repo);
-
-var _RepoView = __webpack_require__(24);
-
-var _RepoView2 = _interopRequireDefault(_RepoView);
-
-var _BridgeManager = __webpack_require__(1);
+var _BridgeManager = __webpack_require__(4);
 
 var _BridgeManager2 = _interopRequireDefault(_BridgeManager);
 
-var _InstallRepo = __webpack_require__(27);
+var _ItemsList = __webpack_require__(20);
 
-var _InstallRepo2 = _interopRequireDefault(_InstallRepo);
-
-var _Advanced = __webpack_require__(28);
-
-var _Advanced2 = _interopRequireDefault(_Advanced);
-
-var _ManageInstalled = __webpack_require__(9);
-
-var _ManageInstalled2 = _interopRequireDefault(_ManageInstalled);
+var _ItemsList2 = _interopRequireDefault(_ItemsList);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2160,10 +1321,10 @@ var Home = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, (Home.__proto__ || Object.getPrototypeOf(Home)).call(this, props));
 
-    _this.state = { repos: [] };
+    _this.state = { categories: {} };
 
     _BridgeManager2.default.get().initiateBridge(function () {
-      _this.setState({ ready: true });
+      _BridgeManager2.default.get().beginStreamingItems();
       _this.reload();
     });
 
@@ -2176,37 +1337,43 @@ var Home = function (_React$Component) {
   _createClass(Home, [{
     key: "reload",
     value: function reload() {
-      var repos = _BridgeManager2.default.get().installedRepos;
-      this.setState({ repos: repos });
-
-      if (repos.length > 0 && !_BridgeManager2.default.get().didBeginStreaming()) {
-        _BridgeManager2.default.get().beginStreamingItems();
-      }
+      var categories = _BridgeManager2.default.get().categorizedItems();
+      var selectedCategory = this.state.selectedCategory ? this.state.selectedCategory : Object.keys(categories)[0];
+      this.setState({ categories: categories, selectedCategory: selectedCategory });
+      this.forceUpdate();
+    }
+  }, {
+    key: "didSelectCategory",
+    value: function didSelectCategory(category) {
+      this.setState({ selectedCategory: category });
     }
   }, {
     key: "render",
     value: function render() {
+      var _this2 = this;
+
       return _react2.default.createElement(
         "div",
         { id: "home", className: "panel static" },
         _react2.default.createElement(
           "div",
           { className: "content" },
-          this.state.ready && this.state.repos.length == 0 && _react2.default.createElement(_InstallRepo2.default, null),
-          _react2.default.createElement(_ManageInstalled2.default, null),
-          this.state.repos.map(function (repo, index) {
-            return _react2.default.createElement(_RepoView2.default, { key: index, repo: repo });
-          })
-        ),
-        _react2.default.createElement(
-          "div",
-          { className: "footer" },
           _react2.default.createElement(
             "div",
-            { className: "right" },
-            _react2.default.createElement(_Advanced2.default, null)
-          )
-        )
+            { className: "button-group categories-options" },
+            Object.keys(this.state.categories).map(function (key) {
+              return _react2.default.createElement(
+                "div",
+                { className: "button default " + (key == _this2.state.selectedCategory ? "info" : ""), key: key, onClick: function onClick() {
+                    _this2.didSelectCategory(key);
+                  } },
+                _BridgeManager2.default.get().humanReadableTitleForExtensionType(key, true)
+              );
+            })
+          ),
+          this.state.selectedCategory && _react2.default.createElement(_ItemsList2.default, { items: this.state.categories[this.state.selectedCategory], contentType: this.state.selectedCategory })
+        ),
+        _react2.default.createElement("div", { className: "footer" })
       );
     }
   }]);
@@ -2217,213 +1384,7 @@ var Home = function (_React$Component) {
 exports.default = Home;
 
 /***/ }),
-/* 24 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(0);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _Repo = __webpack_require__(2);
-
-var _Repo2 = _interopRequireDefault(_Repo);
-
-var _RepoController = __webpack_require__(4);
-
-var _RepoController2 = _interopRequireDefault(_RepoController);
-
-var _BridgeManager = __webpack_require__(1);
-
-var _BridgeManager2 = _interopRequireDefault(_BridgeManager);
-
-var _PackageView = __webpack_require__(8);
-
-var _PackageView2 = _interopRequireDefault(_PackageView);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var RepoView = function (_React$Component) {
-  _inherits(RepoView, _React$Component);
-
-  function RepoView(props) {
-    _classCallCheck(this, RepoView);
-
-    var _this = _possibleConstructorReturn(this, (RepoView.__proto__ || Object.getPrototypeOf(RepoView)).call(this, props));
-
-    _this.toggleOptions = function () {
-      _this.setState({ showOptions: !_this.state.showOptions });
-    };
-
-    _this.deleteRepo = function () {
-      if (confirm("Are you sure you want to delete this repository?")) {
-        _BridgeManager2.default.get().uninstallRepo(_this.props.repo);
-      }
-    };
-
-    _this.state = { packages: [] };
-
-    _this.needsUpdateComponents = true;
-
-    _this.repoController = new _RepoController2.default({ repo: props.repo });
-    _this.repoController.getPackages(function (packages, error) {
-      if (!error) {
-        _BridgeManager2.default.get().registerPackages(packages);
-        _this.setState({ packages: packages || [] });
-        if (_this.receivedBridgeItems && _this.needsUpdateComponents) {
-          _this.updateComponentsWithNewPackageInfo();
-        }
-      }
-    });
-
-    _this.updateObserver = _BridgeManager2.default.get().addUpdateObserver(function () {
-      _this.receivedBridgeItems = true;
-      if (_this.needsUpdateComponents && _this.state.packages.length > 0) {
-        _this.updateComponentsWithNewPackageInfo();
-      }
-      _this.reload();
-    });
-    return _this;
-  }
-
-  _createClass(RepoView, [{
-    key: "updateComponentsWithNewPackageInfo",
-    value: function updateComponentsWithNewPackageInfo() {
-      this.needsUpdateComponents = false;
-      // Update expiration dates for packages
-      var needingSave = [];
-      var _iteratorNormalCompletion = true;
-      var _didIteratorError = false;
-      var _iteratorError = undefined;
-
-      try {
-        for (var _iterator = this.state.packages[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          var packageInfo = _step.value;
-
-          var installed = _BridgeManager2.default.get().itemForPackage(packageInfo);
-          if (installed) {
-            var needsSave = false;
-            var validUntil = new Date(packageInfo.valid_until);
-            // .getTime() must be used to compare dates
-            if (!installed.content.valid_until || installed.content.valid_until.getTime() !== validUntil.getTime()) {
-              installed.content.valid_until = validUntil;
-              needsSave = true;
-            }
-
-            /*
-            As part of the below condition, we used to also have if(JSON.stringify(installed.content.package_info) !== JSON.stringify(packageInfo))
-            to copy over package info. However, if the repo updates a version, then the installed component's version would also update without
-            */
-            if (!installed.content.package_info) {
-              installed.content.package_info = packageInfo;
-              needsSave = true;
-            }
-
-            if (needsSave) {
-              needingSave.push(installed);
-            }
-          }
-        }
-      } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion && _iterator.return) {
-            _iterator.return();
-          }
-        } finally {
-          if (_didIteratorError) {
-            throw _iteratorError;
-          }
-        }
-      }
-
-      if (needingSave.length > 0) {
-        _BridgeManager2.default.get().saveItems(needingSave);
-      } else {
-        _BridgeManager2.default.get().notifyObserversOfUpdate();
-      }
-    }
-  }, {
-    key: "componentWillUnmount",
-    value: function componentWillUnmount() {
-      _BridgeManager2.default.get().removeUpdateObserver(this.updateObserver);
-    }
-  }, {
-    key: "reload",
-    value: function reload() {
-      this.forceUpdate();
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      return _react2.default.createElement(
-        "div",
-        { className: "panel-section" },
-        _react2.default.createElement(
-          "div",
-          { className: "panel-row" },
-          _react2.default.createElement(
-            "h3",
-            { className: "title" },
-            "Repository"
-          ),
-          _react2.default.createElement(
-            "a",
-            { onClick: this.toggleOptions, className: "info" },
-            "Options"
-          )
-        ),
-        this.state.showOptions && _react2.default.createElement(
-          "div",
-          { className: "panel-row" },
-          _react2.default.createElement(
-            "a",
-            { onClick: this.deleteRepo, className: "danger" },
-            "Delete"
-          )
-        ),
-        _react2.default.createElement(
-          "div",
-          { className: "panel-row" },
-          _react2.default.createElement(
-            "div",
-            { className: "packages panel-table" },
-            this.state.packages.map(function (p, index) {
-              return _react2.default.createElement(
-                "div",
-                { className: "package table-item" },
-                _react2.default.createElement(_PackageView2.default, { key: p.identifier, packageInfo: p })
-              );
-            })
-          )
-        )
-      );
-    }
-  }]);
-
-  return RepoView;
-}(_react2.default.Component);
-
-exports.default = RepoView;
-
-/***/ }),
-/* 25 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2443,7 +1404,6 @@ var ComponentManager = function () {
     this.loggingEnabled = false;
     this.acceptsThemes = true;
     this.onReadyCallback = onReady;
-    this.unhandledMessageHandler = null;
 
     this.coallesedSaving = true;
     this.coallesedSavingDelay = 250;
@@ -2479,11 +1439,6 @@ var ComponentManager = function () {
 
         if (originalMessage.callback) {
           originalMessage.callback(payload.data);
-        }
-      } else {
-        // Unhandled message
-        if (this.unhandledMessageHandler) {
-          this.unhandledMessageHandler(payload.data);
         }
       }
     }
@@ -2846,84 +1801,7 @@ if (window) {
 
 
 /***/ }),
-/* 26 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* global define */
-(function (root, factory) {
-    /* istanbul ignore next */
-    if (true) {
-        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-    } else if (typeof exports === 'object') {
-        module.exports = factory();
-    } else {
-        root.compareVersions = factory();
-    }
-}(this, function () {
-
-    var semver = /^v?(?:\d+)(\.(?:[x*]|\d+)(\.(?:[x*]|\d+)(?:-[\da-z\-]+(?:\.[\da-z\-]+)*)?(?:\+[\da-z\-]+(?:\.[\da-z\-]+)*)?)?)?$/i;
-    var patch = /-([0-9A-Za-z-.]+)/;
-
-    function split(v) {
-        var temp = v.replace(/^v/, '').split('.');
-        var arr = temp.splice(0, 2);
-        arr.push(temp.join('.'));
-        return arr;
-    }
-
-    function tryParse(v) {
-        return isNaN(Number(v)) ? v : Number(v);
-    }
-
-    function validate(version) {
-        if (typeof version !== 'string') {
-            throw new TypeError('Invalid argument expected string');
-        }
-        if (!semver.test(version)) {
-            throw new Error('Invalid argument not valid semver');
-        }
-    }
-
-    return function compareVersions(v1, v2) {
-        [v1, v2].forEach(validate);
-
-        var s1 = split(v1);
-        var s2 = split(v2);
-
-        for (var i = 0; i < 3; i++) {
-            var n1 = parseInt(s1[i] || 0, 10);
-            var n2 = parseInt(s2[i] || 0, 10);
-
-            if (n1 > n2) return 1;
-            if (n2 > n1) return -1;
-        }
-
-        if ([s1[2], s2[2]].every(patch.test.bind(patch))) {
-            var p1 = patch.exec(s1[2])[1].split('.').map(tryParse);
-            var p2 = patch.exec(s2[2])[1].split('.').map(tryParse);
-
-            for (i = 0; i < Math.max(p1.length, p2.length); i++) {
-                if (p1[i] === undefined || typeof p2[i] === 'string' && typeof p1[i] === 'number') return -1;
-                if (p2[i] === undefined || typeof p1[i] === 'string' && typeof p2[i] === 'number') return 1;
-
-                if (p1[i] > p2[i]) return 1;
-                if (p2[i] > p1[i]) return -1;
-            }
-        } else if ([s1[2], s2[2]].some(patch.test.bind(patch))) {
-            return patch.test(s1[2]) ? -1 : 1;
-        }
-
-        return 0;
-    };
-
-}));
-
-
-/***/ }),
-/* 27 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2933,21 +1811,17 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _Repo = __webpack_require__(2);
-
-var _Repo2 = _interopRequireDefault(_Repo);
-
-var _RepoController = __webpack_require__(4);
-
-var _RepoController2 = _interopRequireDefault(_RepoController);
-
-var _BridgeManager = __webpack_require__(1);
+var _BridgeManager = __webpack_require__(4);
 
 var _BridgeManager2 = _interopRequireDefault(_BridgeManager);
 
@@ -2959,436 +1833,452 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var InstallRepo = function (_React$Component) {
-  _inherits(InstallRepo, _React$Component);
+var ItemsList = function (_React$Component) {
+  _inherits(ItemsList, _React$Component);
 
-  function InstallRepo(props) {
-    _classCallCheck(this, InstallRepo);
+  function ItemsList(props) {
+    _classCallCheck(this, ItemsList);
 
-    var _this = _possibleConstructorReturn(this, (InstallRepo.__proto__ || Object.getPrototypeOf(InstallRepo)).call(this, props));
+    var _this = _possibleConstructorReturn(this, (ItemsList.__proto__ || Object.getPrototypeOf(ItemsList)).call(this, props));
 
-    _this.handleKeyPress = function (e) {
-      if (e.key === 'Enter') {
-        _this.installProLink(_this.state.url);
-      }
-    };
-
-    _this.handleChange = function (event) {
-      _this.setState({ url: event.target.value });
-    };
-
-    _this.state = { url: "" };
+    _this.state = { selectedItems: [], selectState: false };
     return _this;
   }
 
-  _createClass(InstallRepo, [{
-    key: "installProLink",
-    value: function installProLink(url) {
-      var decoded;
+  _createClass(ItemsList, [{
+    key: "componentWillReceiveProps",
+    value: function componentWillReceiveProps(nextProps) {
+      this.setState({ selectedItems: [] });
+    }
+  }, {
+    key: "deleteSelected",
+    value: function deleteSelected() {
+      _BridgeManager2.default.get().deleteItems(this.state.selectedItems);
+
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
       try {
-        // base64 decode
-        decoded = atob(url);
-      } catch (e) {}
-
-      if (decoded) {
-        url = decoded;
+        for (var _iterator = this.props.items[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var item = _step.value;
+          item.selected = false;
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
       }
 
-      _BridgeManager2.default.get().installRepoUrl(url);
-      this.setState({ url: "" });
+      this.setState({ selectedItems: [], selectState: false });
     }
   }, {
-    key: "render",
-    value: function render() {
-      return _react2.default.createElement(
-        "div",
-        { id: "install-repo", className: "panel-section" },
-        _react2.default.createElement(
-          "div",
-          { className: "panel-row centered" },
-          _react2.default.createElement(
-            "h1",
-            { className: "title" },
-            _react2.default.createElement(
-              "strong",
-              null,
-              "Enter Your Extended Activation Code"
-            )
-          )
-        ),
-        _react2.default.createElement(
-          "div",
-          { className: "notification info dashed one-line" },
-          _react2.default.createElement("input", {
-            className: "info clear center-text",
-            placeholder: "Enter Extended Code",
-            type: "url",
-            value: this.state.url,
-            onKeyPress: this.handleKeyPress,
-            onChange: this.handleChange
-          })
-        ),
-        _react2.default.createElement(
-          "div",
-          { className: "panel-row centered" },
-          _react2.default.createElement(
-            "h1",
-            { className: "title center-text" },
-            _react2.default.createElement(
-              "strong",
-              null,
-              "Standard Notes Extended"
-            ),
-            " gives you access to powerful editors, extensions, tools, themes, and cloud backup options."
-          )
-        ),
-        _react2.default.createElement("div", { className: "panel-row" }),
-        _react2.default.createElement(
-          "div",
-          { className: "panel-row centered" },
-          _react2.default.createElement(
-            "a",
-            { href: "https://standardnotes.org/extensions", target: "_blank", className: "button info big" },
-            _react2.default.createElement(
-              "div",
-              { className: "label" },
-              "Learn More"
-            )
-          )
-        )
-      );
-    }
-  }]);
+    key: "cleanDuplicates",
+    value: function cleanDuplicates() {
+      var toDelete = [];
+      var _iteratorNormalCompletion2 = true;
+      var _didIteratorError2 = false;
+      var _iteratorError2 = undefined;
 
-  return InstallRepo;
-}(_react2.default.Component);
+      try {
+        for (var _iterator2 = this.state.duplicates[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+          var duplicateList = _step2.value;
 
-exports.default = InstallRepo;
-
-/***/ }),
-/* 28 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(0);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _BridgeManager = __webpack_require__(1);
-
-var _BridgeManager2 = _interopRequireDefault(_BridgeManager);
-
-var _ManageInstalled = __webpack_require__(9);
-
-var _ManageInstalled2 = _interopRequireDefault(_ManageInstalled);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Advanced = function (_React$Component) {
-  _inherits(Advanced, _React$Component);
-
-  function Advanced(props) {
-    _classCallCheck(this, Advanced);
-
-    var _this = _possibleConstructorReturn(this, (Advanced.__proto__ || Object.getPrototypeOf(Advanced)).call(this, props));
-
-    _this.toggleForm = function () {
-      _this.setState({ showForm: !_this.state.showForm, success: false });
-    };
-
-    _this.confirmInstallation = function () {
-      _BridgeManager2.default.get().installPackage(_this.state.packageDetails, function (installed) {
-        _this.setState({ url: installed ? null : _this.state.url, showForm: !installed, success: installed, packageDetails: null });
-      });
-    };
-
-    _this.cancelInstallation = function () {
-      _this.setState({ packageDetails: null, showForm: false, url: null });
-    };
-
-    _this.handleInputChange = function (event) {
-      _this.setState({ url: event.target.value });
-    };
-
-    _this.handleKeyPress = function (e) {
-      if (e.key === 'Enter') {
-        _this.downloadPackage(_this.state.url);
+          toDelete = toDelete.concat(duplicateList.slice(1, duplicateList.length));
+        }
+      } catch (err) {
+        _didIteratorError2 = true;
+        _iteratorError2 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion2 && _iterator2.return) {
+            _iterator2.return();
+          }
+        } finally {
+          if (_didIteratorError2) {
+            throw _iteratorError2;
+          }
+        }
       }
-    };
 
-    _this.handleInputChange = function (event) {
-      _this.setState({ url: event.target.value });
-    };
-
-    _this.state = { extensionUrl: "", showForm: false };
-
-    _this.updateObserver = _BridgeManager2.default.get().addUpdateObserver(function () {
-      _this.reload();
-    });
-    return _this;
-  }
-
-  _createClass(Advanced, [{
-    key: "componentWillUnmount",
-    value: function componentWillUnmount() {
-      _BridgeManager2.default.get().removeUpdateObserver(this.updateObserver);
+      _BridgeManager2.default.get().deleteItems(toDelete);
+      this.setState({ duplicatesMode: false, duplicates: null });
     }
   }, {
-    key: "reload",
-    value: function reload() {
-      this.forceUpdate();
-    }
-  }, {
-    key: "downloadPackage",
-    value: function downloadPackage(url) {
+    key: "toggleDuplicates",
+    value: function toggleDuplicates() {
       var _this2 = this;
 
+      if (this.state.duplicatesMode) {
+        this.setState({ duplicatesMode: false });
+        return;
+      }
+
+      this.setState({ scanningDuplicates: true, selectedItems: [] });
+
+      var omitKeys = function omitKeys(obj, keys) {
+        var dup = {};
+        for (var key in obj) {
+          if (keys.indexOf(key) == -1) {
+            dup[key] = obj[key];
+          }
+        }
+        return dup;
+      };
+
+      var areDuplicates = function areDuplicates(a, b) {
+        if (a.content_type !== b.content_type) {
+          return false;
+        }
+        var keysToOmit = ["references"];
+        var aString = JSON.stringify(omitKeys(a.content, keysToOmit));
+        var bString = JSON.stringify(omitKeys(b.content, keysToOmit));
+        return aString == bString;
+      };
+
+      var items = this.props.items;
+      var master = [];
+      var trackingList = [];
+      var itemsLength = items.length;
+      var _index1, _index2;
+
+      var completion = function completion() {
+        _this2.setState({ duplicates: master, duplicatesMode: true, scanningDuplicates: false });
+      };
+
+      var finished = false;
+
+      var _iteratorNormalCompletion3 = true;
+      var _didIteratorError3 = false;
+      var _iteratorError3 = undefined;
+
       try {
-        var decoded = window.atob(url);
-        if (decoded) {
-          url = decoded;
+        var _loop = function _loop() {
+          var _step3$value = _slicedToArray(_step3.value, 2),
+              index1 = _step3$value[0],
+              item1 = _step3$value[1];
+
+          setTimeout(function () {
+            _index1 = index1;
+
+            if (trackingList.indexOf(item1) === -1) {
+              var current = [item1];
+              trackingList.push(item1);
+
+              // Begin Inner Loop
+              var _iteratorNormalCompletion4 = true;
+              var _didIteratorError4 = false;
+              var _iteratorError4 = undefined;
+
+              try {
+                for (var _iterator4 = items.entries()[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+                  var _step4$value = _slicedToArray(_step4.value, 2),
+                      index2 = _step4$value[0],
+                      item2 = _step4$value[1];
+
+                  _index2 = index2;
+                  if (item1 != item2) {
+                    var isDuplicate = areDuplicates(item1, item2);
+                    if (isDuplicate) {
+                      trackingList.push(item2);
+                      current.push(item2);
+                    }
+                  }
+                }
+                // End Inner Loop
+              } catch (err) {
+                _didIteratorError4 = true;
+                _iteratorError4 = err;
+              } finally {
+                try {
+                  if (!_iteratorNormalCompletion4 && _iterator4.return) {
+                    _iterator4.return();
+                  }
+                } finally {
+                  if (_didIteratorError4) {
+                    throw _iteratorError4;
+                  }
+                }
+              }
+
+              if (current.length > 1) {
+                master.push(current);
+              }
+            }
+
+            if (_index1 == itemsLength - 1 && _index2 == itemsLength - 1) {
+              // Done
+              console.log("Done");
+              completion();
+            }
+          }, 10);
+        };
+
+        for (var _iterator3 = items.entries()[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+          _loop();
         }
-      } catch (e) {}
-      _BridgeManager2.default.get().downloadPackageDetails(url, function (response) {
-        if (response.content_type == "SN|Repo") {
-          _BridgeManager2.default.get().installRepoUrl(url);
-        } else {
-          _this2.setState({ packageDetails: response });
+        // End Outer Loop
+      } catch (err) {
+        _didIteratorError3 = true;
+        _iteratorError3 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion3 && _iterator3.return) {
+            _iterator3.return();
+          }
+        } finally {
+          if (_didIteratorError3) {
+            throw _iteratorError3;
+          }
         }
-      });
+      }
+    }
+  }, {
+    key: "toggleSelectAll",
+    value: function toggleSelectAll() {
+      var selectState = !this.state.selectState;
+      var _iteratorNormalCompletion5 = true;
+      var _didIteratorError5 = false;
+      var _iteratorError5 = undefined;
+
+      try {
+        for (var _iterator5 = this.props.items[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+          var item = _step5.value;
+
+          item.selected = selectState;
+        }
+      } catch (err) {
+        _didIteratorError5 = true;
+        _iteratorError5 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion5 && _iterator5.return) {
+            _iterator5.return();
+          }
+        } finally {
+          if (_didIteratorError5) {
+            throw _iteratorError5;
+          }
+        }
+      }
+
+      this.setState({ selectState: selectState, selectedItems: selectState ? this.props.items : [] });
+    }
+  }, {
+    key: "toggleSelection",
+    value: function toggleSelection(item) {
+      console.log("Toggle selection", item);
+      item.selected = !item.selected;
+      var selectedItems = this.state.selectedItems;
+      if (item.selected) {
+        selectedItems.push(item);
+      } else {
+        selectedItems.splice(selectedItems.indexOf(item), 1);
+      }
+      this.setState({ selectedItems: selectedItems });
     }
   }, {
     key: "render",
     value: function render() {
-      var extensions = _BridgeManager2.default.get().allInstalled();
-      var extType,
-          packageDetails = this.state.packageDetails;
-      if (packageDetails) {
-        extType = _BridgeManager2.default.get().humanReadableTitleForExtensionType(packageDetails.content_type);
-      }
+      var _this3 = this;
+
+      var selectedCount = this.state.selectedItems.length;
+      var itemsWrapper = this.state.duplicatesMode ? this.state.duplicates : [this.props.items];
+
       return _react2.default.createElement(
         "div",
-        { className: "panel-section no-bottom-pad" },
+        { className: "panel-section" },
         _react2.default.createElement(
           "div",
-          { className: "horizontal-group" },
-          _react2.default.createElement(
-            "a",
-            { onClick: this.toggleForm, className: "info" },
-            "Import Extension"
-          )
-        ),
-        this.state.success && _react2.default.createElement(
-          "div",
-          { className: "panel-row justify-right" },
-          _react2.default.createElement(
-            "p",
-            { className: "success" },
-            "Extension successfully installed."
-          )
-        ),
-        this.state.showForm && _react2.default.createElement(
-          "div",
           { className: "panel-row" },
-          _react2.default.createElement("input", {
-            className: "",
-            placeholder: "Enter Extension Link",
-            type: "url",
-            autoFocus: true,
-            value: this.state.url,
-            onKeyPress: this.handleKeyPress,
-            onChange: this.handleInputChange
-          })
-        ),
-        packageDetails && _react2.default.createElement(
-          "div",
-          { className: "notification info panel-row justify-left", style: { textAlign: "center" } },
           _react2.default.createElement(
             "div",
-            { className: "panel-column stretch" },
-            _react2.default.createElement(
-              "h2",
-              { className: "title" },
-              "Confirm Installation"
+            { className: "context-options panel-row button-group" },
+            !this.state.duplicatesMode && _react2.default.createElement(
+              "div",
+              { className: "button default", onClick: function onClick() {
+                  _this3.toggleSelectAll();
+                } },
+              this.state.selectState ? "Deselect All" : "Select All"
+            ),
+            selectedCount > 0 && _react2.default.createElement(
+              "div",
+              { className: "button " + (selectedCount > 0 ? "danger" : "default"), onClick: function onClick() {
+                  _this3.deleteSelected();
+                } },
+              "Delete " + selectedCount + " Items"
             ),
             _react2.default.createElement(
               "div",
-              { className: "panel-row centered" },
-              _react2.default.createElement(
-                "div",
-                null,
-                _react2.default.createElement(
-                  "p",
-                  null,
-                  _react2.default.createElement(
-                    "strong",
-                    null,
-                    "Name: "
-                  )
-                ),
-                _react2.default.createElement(
-                  "p",
-                  null,
-                  packageDetails.name
-                )
-              )
+              { className: "button default", onClick: function onClick() {
+                  _this3.toggleDuplicates();
+                } },
+              this.state.scanningDuplicates && _react2.default.createElement("div", { className: "spinner small default" }),
+              !this.state.scanningDuplicates && (this.state.duplicatesMode ? "Hide Duplicates" : "Find Duplicates")
             ),
-            _react2.default.createElement(
+            this.state.duplicatesMode && this.state.duplicates.length > 0 && _react2.default.createElement(
               "div",
-              { className: "panel-row centered" },
-              _react2.default.createElement(
-                "div",
-                null,
-                _react2.default.createElement(
-                  "p",
-                  null,
-                  _react2.default.createElement(
-                    "strong",
-                    null,
-                    "Description: "
-                  )
-                ),
-                _react2.default.createElement(
-                  "p",
-                  null,
-                  packageDetails.description
-                )
-              )
-            ),
-            packageDetails.version && _react2.default.createElement(
-              "div",
-              { className: "panel-row centered" },
-              _react2.default.createElement(
-                "div",
-                null,
-                _react2.default.createElement(
-                  "p",
-                  null,
-                  _react2.default.createElement(
-                    "strong",
-                    null,
-                    "Version: "
-                  )
-                ),
-                _react2.default.createElement(
-                  "p",
-                  null,
-                  packageDetails.version
-                )
-              )
-            ),
-            _react2.default.createElement(
-              "div",
-              { className: "panel-row centered" },
-              _react2.default.createElement(
-                "div",
-                null,
-                _react2.default.createElement(
-                  "p",
-                  null,
-                  _react2.default.createElement(
-                    "strong",
-                    null,
-                    "Hosted URL: "
-                  )
-                ),
-                _react2.default.createElement(
-                  "p",
-                  null,
-                  packageDetails.url
-                )
-              )
-            ),
-            packageDetails.download_url && _react2.default.createElement(
-              "div",
-              { className: "panel-row centered" },
-              _react2.default.createElement(
-                "div",
-                null,
-                _react2.default.createElement(
-                  "p",
-                  null,
-                  _react2.default.createElement(
-                    "strong",
-                    null,
-                    "Download URL: "
-                  )
-                ),
-                _react2.default.createElement(
-                  "p",
-                  null,
-                  packageDetails.download_url
-                )
-              )
-            ),
-            _react2.default.createElement(
-              "div",
-              { className: "panel-row centered" },
-              _react2.default.createElement(
-                "div",
-                null,
-                _react2.default.createElement(
-                  "p",
-                  null,
-                  _react2.default.createElement(
-                    "strong",
-                    null,
-                    "Extension Type: "
-                  )
-                ),
-                _react2.default.createElement(
-                  "p",
-                  null,
-                  extType
-                )
-              )
-            ),
-            _react2.default.createElement(
-              "div",
-              { className: "panel-row centered" },
-              _react2.default.createElement(
-                "div",
-                { onClick: this.confirmInstallation, className: "button info" },
-                _react2.default.createElement(
-                  "div",
-                  { className: "label" },
-                  "Install"
-                )
-              )
-            ),
-            _react2.default.createElement(
-              "div",
-              { className: "panel-row centered" },
-              _react2.default.createElement(
-                "a",
-                { className: "danger", onClick: this.cancelInstallation },
-                "Cancel"
-              )
+              { className: "button danger", onClick: function onClick() {
+                  _this3.cleanDuplicates();
+                } },
+              "Clean Duplicates"
             )
           )
+        ),
+        _react2.default.createElement(
+          "div",
+          { className: "panel-section" },
+          itemsWrapper.map(function (array, index) {
+            return _react2.default.createElement(
+              "table",
+              null,
+              _react2.default.createElement(
+                "tr",
+                null,
+                _react2.default.createElement(
+                  "th",
+                  null,
+                  "Selection"
+                ),
+                _react2.default.createElement(
+                  "th",
+                  null,
+                  "Content"
+                ),
+                _react2.default.createElement(
+                  "th",
+                  null,
+                  "Created"
+                ),
+                _react2.default.createElement(
+                  "th",
+                  null,
+                  "Updated"
+                ),
+                _react2.default.createElement(
+                  "th",
+                  null,
+                  "Identifier"
+                )
+              ),
+              array.map(function (item, index) {
+                return _react2.default.createElement(ItemRow, {
+                  key: item.uuid,
+                  item: item,
+                  onSelectionChange: function onSelectionChange(i) {
+                    _this3.toggleSelection(i);
+                  }
+                });
+              })
+            );
+          })
         )
       );
     }
   }]);
 
-  return Advanced;
+  return ItemsList;
 }(_react2.default.Component);
 
-exports.default = Advanced;
+exports.default = ItemsList;
+
+var ItemRow = function (_React$Component2) {
+  _inherits(ItemRow, _React$Component2);
+
+  function ItemRow(props) {
+    _classCallCheck(this, ItemRow);
+
+    var _this4 = _possibleConstructorReturn(this, (ItemRow.__proto__ || Object.getPrototypeOf(ItemRow)).call(this, props));
+
+    _this4._renderObject = function (obj) {
+      var capitalizeFirstLetter = function capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+      };
+      return _react2.default.createElement(
+        "div",
+        null,
+        Object.keys(obj).map(function (key) {
+          return _typeof(obj[key]) !== 'object' && _react2.default.createElement(
+            "div",
+            { className: "content-item", key: key },
+            _react2.default.createElement(
+              "strong",
+              { className: "key" },
+              capitalizeFirstLetter(key),
+              ": "
+            ),
+            _react2.default.createElement(
+              "span",
+              { className: "body" },
+              obj[key]
+            )
+          );
+        })
+      );
+    };
+
+    _this4.state = {};
+    return _this4;
+  }
+
+  _createClass(ItemRow, [{
+    key: "render",
+    value: function render() {
+      var _this5 = this;
+
+      var item = this.props.item;
+      return _react2.default.createElement(
+        "tr",
+        { className: "table-item " + (item.selected ? "selected" : "") },
+        _react2.default.createElement(
+          "td",
+          { className: "selection-column" },
+          _react2.default.createElement(
+            "label",
+            null,
+            _react2.default.createElement("input", { type: "checkbox",
+              checked: item.selected,
+              onChange: function onChange() {
+                _this5.props.onSelectionChange(item);
+              }
+            })
+          )
+        ),
+        _react2.default.createElement(
+          "td",
+          { className: "content-body" },
+          this._renderObject(item.content)
+        ),
+        _react2.default.createElement(
+          "td",
+          null,
+          item.created_at.toString()
+        ),
+        _react2.default.createElement(
+          "td",
+          null,
+          item.updated_at.toString()
+        ),
+        _react2.default.createElement(
+          "td",
+          null,
+          item.uuid
+        )
+      );
+    }
+  }]);
+
+  return ItemRow;
+}(_react2.default.Component);
 
 /***/ })
 /******/ ]);

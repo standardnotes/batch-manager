@@ -2,38 +2,59 @@ html, body {
   font-size: 16px;
   margin: 0; }
 
-.panel {
-  height: 100%;
-  background-color: white; }
-  .panel .footer {
-    font-size: 15px; }
+.sn-component {
+  user-select: auto !important; }
+  .sn-component .button-group .button {
+    vertical-align: middle; }
 
-.package label {
-  font-size: 1rem !important; }
+.context-options {
+  margin-bottom: 10px; }
 
-.package .package-notification {
-  margin: 0 !important;
-  margin-top: 0.6rem !important;
-  padding: 0.5rem !important; }
-  .package .package-notification .text {
-    font-size: 0.8rem !important;
-    line-height: 1rem !important; }
+table {
+  display: block;
+  width: 100%;
+  overflow: auto;
+  border-collapse: collapse;
+  border-spacing: 0px;
+  border-color: grey;
+  margin-bottom: 15px; }
+  table th, table td {
+    padding: 6px 13px;
+    border: 1px solid #dfe2e5; }
+  table tr:nth-child(2n) {
+    background-color: #f6f6f6; }
 
-.package .name-input {
-  font-size: 0.95rem;
-  font-weight: bold; }
-  .package .name-input[type="text"][disabled] {
-    color: black;
-    background-color: transparent; }
+.table-item.selected {
+  background-color: rgba(8, 109, 214, 0.1); }
 
-.item-advanced-options {
-  margin-top: 15px; }
+.table-item .selection-column label {
+  text-align: center; }
 
-input.disguised {
-  border: none !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  font-size: 1rem !important; }
+.table-item .content-body .content-item {
+  margin-top: 4px;
+  margin-bottom: 8px; }
+  .table-item .content-body .content-item .body {
+    /* These are technically the same, but use both */
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    -ms-word-break: break-all;
+    /* This is the dangerous one in WebKit, as it breaks things wherever */
+    word-break: break-all;
+    /* Instead use this non-standard one: */
+    word-break: break-word;
+    /* Adds a hyphen where the word breaks, if supported (No Blink) */
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto; }
+
+tr {
+  border: 1px solid gray; }
+
+.categories-options {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  padding-bottom: 15px;
+  margin-bottom: 10px; }
 
 .sn-component {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
