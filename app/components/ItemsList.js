@@ -99,7 +99,6 @@ export default class ItemsList extends React.Component {
 
         if((_index1 == itemsLength - 1) && (_index2 == itemsLength - 1)) {
           // Done
-          console.log("Done");
           completion();
         }
       }, 10);
@@ -118,7 +117,6 @@ export default class ItemsList extends React.Component {
   }
 
   toggleSelection(item) {
-    console.log("Toggle selection", item);
     item.selected = !item.selected;
     var selectedItems = this.state.selectedItems;
     if(item.selected) {

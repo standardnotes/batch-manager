@@ -303,7 +303,7 @@ var BridgeManager = function () {
 
       this.componentManager.acceptsThemes = false;
 
-      this.componentManager.setSize("container", 1000, 800);
+      this.componentManager.setSize("content", "90%", "90%");
     }
   }, {
     key: "getItemAppDataValue",
@@ -2041,7 +2041,6 @@ var ItemsList = function (_React$Component) {
 
             if (_index1 == itemsLength - 1 && _index2 == itemsLength - 1) {
               // Done
-              console.log("Done");
               completion();
             }
           }, 10);
@@ -2100,7 +2099,6 @@ var ItemsList = function (_React$Component) {
   }, {
     key: "toggleSelection",
     value: function toggleSelection(item) {
-      console.log("Toggle selection", item);
       item.selected = !item.selected;
       var selectedItems = this.state.selectedItems;
       if (item.selected) {

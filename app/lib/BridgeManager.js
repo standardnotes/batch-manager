@@ -32,7 +32,7 @@ export default class BridgeManager {
 
     this.componentManager.acceptsThemes = false;
 
-    this.componentManager.setSize("container", 1000, 800);
+    this.componentManager.setSize("content", "90%", "90%");
   }
 
   getItemAppDataValue(item, key) {
