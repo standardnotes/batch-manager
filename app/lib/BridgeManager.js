@@ -82,6 +82,14 @@ export default class BridgeManager {
 
       this.notifyObserversOfUpdate();
     });
+  }
+
+  createItems(items, callback) {
+    for(var item of items) { item.uuid = null; }
+    this.componentManager.createItems(items, (createdItems) => {
+      console.log("Successfully created items", createdItems);
+      callback(createdItems);
+    })
 
   }
 

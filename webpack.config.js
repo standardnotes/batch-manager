@@ -41,7 +41,9 @@ module.exports = {
       },
       { test: /\.js[x]?$/, include: [
         path.resolve(__dirname, 'app'),
-        path.resolve(__dirname, 'node_modules/sn-components-api/dist/dist.js')
+        // These lines have no effect. These files are instead imported using the import syntax inside js files.
+        // path.resolve(__dirname, 'node_modules/sn-components-api/dist/dist.js'),
+        // path.resolve(__dirname, 'node_modules/standard-file-js/dist/sfjs.min.js'),
       ], exclude: /node_modules/, loader: 'babel-loader' }
     ]
   },
@@ -52,6 +54,17 @@ module.exports = {
     }
   },
   plugins: [
+    function() {
+      this.plugin("done", function(stats) {
+        // console.log("done", stats);
+        if (stats.compilation.errors && stats.compilation.errors.length &&
+process.argv.indexOf("--watch") == -1) {
+          console.log(stats.compilation.errors);
+          process.exit(1);
+        }
+      });
+    },
+
     new ExtractTextPlugin({ filename: './dist.css', disable: false, allChunks: true}),
     new uglifyJsPlugin({
       include: /\.min\.js$/,

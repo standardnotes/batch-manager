@@ -1,18 +1,16 @@
 import React from 'react';
 import BridgeManager from "../lib/BridgeManager.js";
+import {BaseItemsList, ItemsTable} from "./BaseItemsList";
 
-export default class ItemsList extends React.Component {
+export default class UserItemsList extends BaseItemsList {
 
   constructor(props) {
     super(props);
-    this.state = {selectedItems: [], selectState: false};
   }
 
   componentWillReceiveProps(nextProps) {
-    for(var item of this.props.items) {
-      item.selected = false;
-    }
-    this.setState({selectedItems: [], selectState: false, duplicatesMode: false, duplicates: null});
+    super.componentWillReceiveProps(nextProps);
+    this.setState({duplicatesMode: false, duplicates: null});
   }
 
   deleteSelected() {
@@ -107,29 +105,9 @@ export default class ItemsList extends React.Component {
     // End Outer Loop
   }
 
-  toggleSelectAll() {
-    var selectState = !this.state.selectState;
-    for(var item of this.props.items) {
-      item.selected = selectState;
-    }
-
-    this.setState({selectState: selectState, selectedItems: selectState ? this.props.items : []})
-  }
-
-  toggleSelection(item) {
-    item.selected = !item.selected;
-    var selectedItems = this.state.selectedItems;
-    if(item.selected) {
-      selectedItems.push(item);
-    } else {
-      selectedItems.splice(selectedItems.indexOf(item), 1);
-    }
-    this.setState({selectedItems: selectedItems});
-  }
-
   render() {
     let selectedCount = this.state.selectedItems.length;
-    var itemsWrapper = this.state.duplicatesMode ? this.state.duplicates : [this.props.items];
+    var itemGroups = this.state.duplicatesMode ? this.state.duplicates : [this.props.items];
 
     return (
       <div className="panel-section">
@@ -168,82 +146,9 @@ export default class ItemsList extends React.Component {
         </div>
 
         <div className="panel-section">
-
-            {itemsWrapper.map((array, index) =>
-              <table>
-                <tr>
-                  <th>Selection</th>
-                  <th>Content</th>
-                  <th>Created</th>
-                  <th>Updated</th>
-                  <th>Identifier</th>
-                </tr>
-
-                {array.map((item, index) =>
-                  <ItemRow
-                    key={item.uuid}
-                    item={item}
-                    onSelectionChange={(i) => {this.toggleSelection(i)}}
-                  />
-                )}
-              </table>
-            )}
-
+          <ItemsTable itemGroups={itemGroups} onSelectionChange={(item) => {this.toggleSelection(item)}} />
         </div>
       </div>
-    )
-  }
-}
-
-class ItemRow extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {expanded: false};
-  }
-
-  _renderObject = (obj) => {
-    const capitalizeFirstLetter = (string) => {
-      return string.charAt(0).toUpperCase() + string.slice(1);
-    }
-    return (
-      <div>
-        {Object.keys(obj).map((key) =>
-          (obj[key] && typeof(obj[key]) !== 'object' &&
-            <div className="content-item" key={key}>
-              <strong className="key">{capitalizeFirstLetter(key)}: </strong>
-              <span className="body">{typeof(obj[key]) == "boolean" ? JSON.stringify(obj[key]) : obj[key]}</span>
-            </div>
-          )
-        )}
-      </div>
-    )
-  }
-
-  render() {
-    var item = this.props.item;
-    return (
-      <tr className={"table-item " + (item.selected ? "selected" : "")}>
-        <td className="selection-column">
-          <label>
-            <input type="checkbox"
-              checked={item.selected}
-              onChange={() => {this.props.onSelectionChange(item)}}
-            />
-          </label>
-        </td>
-
-        <td>
-          <div
-            onClick={() => {this.setState({expanded: !this.state.expanded})}}
-            className={"content-body " + (this.state.expanded ? "expanded" : "")}>
-              {this._renderObject(item.content)}
-          </div>
-        </td>
-
-        <td>{item.created_at.toString()}</td>
-        <td>{item.updated_at.toString()}</td>
-        <td>{item.uuid}</td>
-      </tr>
     )
   }
 }

@@ -1,6 +1,12 @@
 html, body {
   font-size: 16px;
   margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 .sn-component {
@@ -85,6 +91,68 @@ tr {
   border-bottom: 1px solid rgba(black, 0.1);
   padding-bottom: 15px;
   margin-bottom: 5px;
+}
+
+#backups {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+
+  #drop-container {
+    padding: 0;
+    margin-top: 20px;
+    height: 60%;
+    width: 100%;
+    padding: 20px;
+    padding-bottom: 30px;
+
+    text-align: center;
+    overflow: hidden;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    #file-input {
+      width: auto;
+      text-align: center;
+      margin-top: 15px;
+    }
+
+    #password-input {
+      background-color: white;
+      border-radius: 4px;
+    }
+
+    .uploading {
+      display: none;
+    }
+
+    &.is-dragover {
+      background-color: rgba(gray, 0.10);
+      cursor: crosshair;
+    }
+
+    &.is-uploading {
+      .uploading {
+        display: block;
+        position: absolute;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 15px;
+        font-weight: bold;
+        font-size: 18px;
+        text-align: center;
+        width: 100%;
+        height: 100%;
+      }
+
+      .instructions-label {
+        display: none;
+      }
+    }
+  }
+
 }
 
 @import '~stylekit';
