@@ -114,7 +114,7 @@ export class ItemRow extends React.Component {
   _renderColumn = (column) => {
     var item = this.props.item;
     return (
-      <td>
+      <td style={column.width ? {maxWidth: column.width} : {}}>
         {column.key == "content" &&
           <div
             onClick={() => {this.setState({expanded: !this.state.expanded})}}

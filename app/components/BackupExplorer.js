@@ -15,48 +15,55 @@ export default class BackupExplorer extends React.Component {
   }
 
   reset() {
-    console.log("Reset");
     this.setState({rawData: null, decryptedItems: null, requestPassword: false});
   }
 
   configureFileForm() {
     var dropContainer = document.getElementById("drop-container");
     var fileInput = document.getElementById("file-input");
-
-    if(fileInput) {
-      fileInput.onchange = (event) => {
-        let files = event.target.files;
-        var reader = new FileReader();
-        reader.onload = (e) => {
-          var data = JSON.parse(e.target.result);
-          this.previewData(data);
-        }
-
-        reader.readAsText(files[0]);
-      };
-
-      var onEnter = function() {
-        dropContainer.classList.add('is-dragover');
-      }
-
-      var onExit = function() {
-        dropContainer.classList.remove('is-dragover');
-      }
-
-      dropContainer.ondragover = dropContainer.ondragenter = function(evt) {
-        onEnter();
-        evt.preventDefault();
-      };
-
-      dropContainer.ondragleave = dropContainer.ondragend = onExit;
-
-      dropContainer.ondrop = function(evt) {
-        onExit();
-        dropContainer.classList.add('is-uploading');
-        fileInput.files = evt.dataTransfer.files;
-        evt.preventDefault();
-      };
+    if(!fileInput) {
+      return;
     }
+
+    let onEnter = function() {
+      dropContainer.classList.add('is-dragover');
+    }
+
+    let onExit = function() {
+      dropContainer.classList.remove('is-dragover');
+    }
+
+    // Allow user to drag anywhere in the window
+    window.addEventListener("dragover",function(e){
+      onEnter();
+      e = e || event;
+      e.preventDefault();
+    },false);
+
+    window.addEventListener("drop",function(evt){
+      onExit();
+      dropContainer.classList.add('is-uploading');
+      fileInput.files = evt.dataTransfer.files;
+      evt.preventDefault();
+    }, false);
+
+    fileInput.onchange = (event) => {
+      let files = event.target.files;
+      var reader = new FileReader();
+      reader.onload = (e) => {
+        var data = JSON.parse(e.target.result);
+        this.previewData(data);
+      }
+
+      reader.readAsText(files[0]);
+    };
+
+    dropContainer.ondragover = dropContainer.ondragenter = function(evt) {
+      onEnter();
+      evt.preventDefault();
+    };
+
+    dropContainer.ondragleave = dropContainer.ondragend = onExit;
   }
 
   previewData(data) {
@@ -74,13 +81,16 @@ export default class BackupExplorer extends React.Component {
     params.password = this.state.password;
 
     SFJS.crypto.computeEncryptionKeysForUser(params, (keys) => {
-      console.log("Got keys", keys);
       this.decryptItems(this.state.rawData.items, keys, (decryptedItems, errorCount) => {
-        console.log("Decrypted data", decryptedItems);
-        this.setState({decryptedItems: decryptedItems, requestPassword: false});
+        if(errorCount == this.state.rawData.items.length) {
+          // All items unable to be decrypted, ask for password
+          this.setState({requestPassword: true, password: ""});
+        } else {
+          this.setState({decryptedItems: decryptedItems, requestPassword: false});
+        }
         if(errorCount > 0) {
           setTimeout(function () {
-            alert(`${errorCount} items were not able to be decrypted. Please check your password and try again.`);
+            alert(`${errorCount} items were unable to be decrypted. Please check your password and try again.`);
           }, 10);
         }
       })
@@ -119,13 +129,13 @@ export default class BackupExplorer extends React.Component {
   }
 
   recoverItems(items) {
-    if(!confirm(`Are you sure you want to recover ${items.length} items? Items will be recovered as duplicates and will not replace any existing data.`)) {
+    if(!confirm(`Do you want to recover ${items.length} items? Items will be recovered as new items and will not replace any existing data.`)) {
       return;
     }
 
     BridgeManager.get().createItems(items, () => {
       setTimeout(function () {
-        alert("Your items have been recovered. Note that the items' create date is kept to the original value, so may not appear at the top of your notes list if you're not sorting by date modified.")
+        alert("Your items have been recovered. Note that the items' create date is kept to the original value, so may not appear at the top of your notes list if not sorting by date modified.")
       }, 250);
     })
   }
@@ -133,7 +143,7 @@ export default class BackupExplorer extends React.Component {
   render() {
 
     let additionalColumns = [
-      {label: "Type", key: "content_type"}
+      {label: "Type", key: "content_type", width: 100}
     ];
 
     return (
@@ -145,7 +155,7 @@ export default class BackupExplorer extends React.Component {
                   <div>
                     <form id="file-attacher-form">
                       <label class="file-input-wrapper">
-                        <h3 class="instructions-label"><strong>Drag and Drop</strong> or select a file to preview.</h3>
+                        <h3 class="instructions-label"><strong>Drag and Drop</strong> or select a backup file to preview its contents.</h3>
                         <input id="file-input" type="file" name="file" class="file-input" />
                       </label>
                     </form>
@@ -154,12 +164,12 @@ export default class BackupExplorer extends React.Component {
 
                 {this.state.requestPassword &&
                   <div>
-                    <p>Enter your password at the time the backup was created</p>
+                    <p>Enter your password at the time this backup was created:</p>
                     <input
                       autoFocus={true}
                       id="password-input"
                       className="info clear center-text"
-                      placeholder="Enter Password"
+                      placeholder="Password"
                       type={"password"}
                       value={this.state.password}
                       onKeyPress={this.handlePasswordKeyPress}
@@ -170,7 +180,7 @@ export default class BackupExplorer extends React.Component {
               </div>
             }
 
-            {this.state.decryptedItems &&
+            {this.state.decryptedItems && this.state.decryptedItems.length > 0 &&
               <BackupItemsList items={this.state.decryptedItems} additionalColumns={additionalColumns} recoverItems={(items) => {this.recoverItems(items)}} />
             }
       </div>

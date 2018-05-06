@@ -1,6 +1,11 @@
 html, body {
   font-size: 16px;
-  margin: 0; }
+  margin: 0;
+  padding: 0;
+  height: 100%; }
+
+* {
+  box-sizing: border-box; }
 
 .sn-component {
   user-select: auto !important; }
@@ -17,18 +22,22 @@ table {
   border-collapse: collapse;
   border-spacing: 0px;
   border-color: grey;
-  margin-bottom: 15px; }
+  margin-bottom: 15px;
+  table-layout: fixed; }
   table th, table td {
     padding: 6px 13px;
-    border: 1px solid #dfe2e5; }
+    border: 1px solid #dfe2e5;
+    overflow-x: scroll; }
   table tr:nth-child(2n) {
     background-color: #f6f6f6; }
 
 .table-item.selected {
   background-color: rgba(8, 109, 214, 0.1); }
 
-.table-item .selection-column label {
-  text-align: center; }
+.table-item .selection-column {
+  width: 1% !important; }
+  .table-item .selection-column label {
+    text-align: center; }
 
 .table-item .content-body {
   max-height: 100px;
@@ -58,8 +67,52 @@ tr {
 
 .categories-options {
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  padding-bottom: 15px;
+  padding-bottom: 15px !important;
   margin-bottom: 5px; }
+
+#backups {
+  padding: 0;
+  margin: 0;
+  height: 100%; }
+  #backups #drop-container {
+    padding: 0;
+    margin-top: 20px;
+    height: 60%;
+    width: 100%;
+    padding: 20px;
+    padding-bottom: 30px;
+    text-align: center;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center; }
+    #backups #drop-container #file-input {
+      width: auto;
+      text-align: center;
+      margin-top: 15px; }
+    #backups #drop-container #password-input {
+      background-color: rgba(255, 255, 255, 0.5);
+      border-radius: 0px;
+      margin-top: 10px;
+      font-size: 15px; }
+    #backups #drop-container .uploading {
+      display: none; }
+    #backups #drop-container.is-dragover {
+      background-color: rgba(128, 128, 128, 0.1);
+      cursor: crosshair; }
+    #backups #drop-container.is-uploading .uploading {
+      display: block;
+      position: absolute;
+      margin-left: auto;
+      margin-right: auto;
+      margin-top: 15px;
+      font-weight: bold;
+      font-size: 18px;
+      text-align: center;
+      width: 100%;
+      height: 100%; }
+    #backups #drop-container.is-uploading .instructions-label {
+      display: none; }
 
 .sn-component {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;

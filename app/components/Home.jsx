@@ -23,7 +23,7 @@ export default class Home extends React.Component {
   reload() {
     let categories = BridgeManager.get().categorizedItems();
     let selectedCategory = this.state.selectedCategory ? this.state.selectedCategory : Object.keys(categories)[0];
-    this.setState({categories: categories, selectedCategory: "backups"});
+    this.setState({categories: categories, selectedCategory: selectedCategory});
     this.forceUpdate();
   }
 

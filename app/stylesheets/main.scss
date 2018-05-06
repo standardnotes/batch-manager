@@ -29,10 +29,12 @@ table {
   border-spacing: 0px;
   border-color: grey;
   margin-bottom: 15px;
+  table-layout: fixed;
 
   th, td {
     padding: 6px 13px;
     border: 1px solid #dfe2e5;
+    overflow-x: scroll;
   }
 
   tr:nth-child(2n) {
@@ -45,6 +47,9 @@ table {
     background-color: rgba(8, 109, 214, 0.1);
   }
   .selection-column {
+    width: 1% !important;
+    // width: 20px;
+    // max-width: 20px;
     label {
       text-align: center;
     }
@@ -89,7 +94,7 @@ tr {
 
 .categories-options {
   border-bottom: 1px solid rgba(black, 0.1);
-  padding-bottom: 15px;
+  padding-bottom: 15px !important;
   margin-bottom: 5px;
 }
 
@@ -120,8 +125,10 @@ tr {
     }
 
     #password-input {
-      background-color: white;
-      border-radius: 4px;
+      background-color: rgba(white, 0.5);
+      border-radius: 0px;
+      margin-top: 10px;
+      font-size: 15px;
     }
 
     .uploading {
