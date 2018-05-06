@@ -561,31 +561,32 @@ var BaseItemsList = exports.BaseItemsList = function (_React$Component) {
   _createClass(BaseItemsList, [{
     key: "componentWillReceiveProps",
     value: function componentWillReceiveProps(nextProps) {
-      var _iteratorNormalCompletion = true;
-      var _didIteratorError = false;
-      var _iteratorError = undefined;
+      if (this.props.items) {
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
 
-      try {
-        for (var _iterator = this.props.items[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          var item = _step.value;
-
-          item.selected = false;
-        }
-      } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
-      } finally {
         try {
-          if (!_iteratorNormalCompletion && _iterator.return) {
-            _iterator.return();
+          for (var _iterator = this.props.items[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            var item = _step.value;
+
+            item.selected = false;
           }
+        } catch (err) {
+          _didIteratorError = true;
+          _iteratorError = err;
         } finally {
-          if (_didIteratorError) {
-            throw _iteratorError;
+          try {
+            if (!_iteratorNormalCompletion && _iterator.return) {
+              _iterator.return();
+            }
+          } finally {
+            if (_didIteratorError) {
+              throw _iteratorError;
+            }
           }
         }
       }
-
       this.setState({ selectedItems: [], selectState: false, duplicatesMode: false, duplicates: null });
     }
   }, {
@@ -670,7 +671,7 @@ var ItemsTable = exports.ItemsTable = function (_React$Component2) {
             return _react2.default.createElement(
               "table",
               null,
-              _react2.default.createElement(
+              array && _react2.default.createElement(
                 "tr",
                 null,
                 _react2.default.createElement(
@@ -686,7 +687,7 @@ var ItemsTable = exports.ItemsTable = function (_React$Component2) {
                   );
                 })
               ),
-              array.map(function (item, index) {
+              array && array.map(function (item, index) {
                 return _react2.default.createElement(ItemRow, {
                   key: item.uuid,
                   item: item,

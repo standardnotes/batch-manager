@@ -9,8 +9,10 @@ export class BaseItemsList extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    for(var item of this.props.items) {
-      item.selected = false;
+    if(this.props.items) {
+      for(var item of this.props.items) {
+        item.selected = false;
+      }
     }
     this.setState({selectedItems: [], selectState: false, duplicatesMode: false, duplicates: null});
   }
@@ -63,14 +65,16 @@ export class ItemsTable extends React.Component {
 
             {this.props.itemGroups.map((array, index) =>
               <table>
-                <tr>
-                  <th>Selection</th>
-                  {columns.map((c) =>
-                    <th>{c.label}</th>
-                  )}
-                </tr>
-
-                {array.map((item, index) =>
+                {array &&
+                  <tr>
+                    <th>Selection</th>
+                    {columns.map((c) =>
+                      <th>{c.label}</th>
+                    )}
+                  </tr>
+                }
+                
+                {array && array.map((item, index) =>
                   <ItemRow
                     key={item.uuid}
                     item={item}
