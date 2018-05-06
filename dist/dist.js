@@ -2532,6 +2532,42 @@ var BackupExplorer = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, (BackupExplorer.__proto__ || Object.getPrototypeOf(BackupExplorer)).call(this, props));
 
+    _this.onWindowDragOver = function (evt) {
+      _this.dropContainerOnEnter();
+      evt = evt || event;
+      evt.preventDefault();
+    };
+
+    _this.onWindowDrop = function (evt) {
+      _this.dropContainerOnExit();
+
+      _this.handledFiles = true;
+      _this.dropContainer.classList.add('is-uploading');
+
+      _this.fileInput.files = evt.dataTransfer.files;
+      _this.handleDroppedFiles(evt.dataTransfer.files);
+
+      evt.preventDefault();
+    };
+
+    _this.dropContainerOnEnter = function () {
+      _this.dropContainer.classList.add('is-dragover');
+    };
+
+    _this.dropContainerOnExit = function () {
+      _this.dropContainer.classList.remove('is-dragover');
+    };
+
+    _this.handleDroppedFiles = function (files) {
+      var reader = new FileReader();
+      reader.onload = function (e) {
+        var data = JSON.parse(e.target.result);
+        _this.previewData(data);
+      };
+
+      reader.readAsText(files[0]);
+    };
+
     _this.handlePasswordKeyPress = function (e) {
       if (e.key === 'Enter') {
         _this.onPasswordSubmit();
@@ -2550,62 +2586,48 @@ var BackupExplorer = function (_React$Component) {
     key: "componentDidMount",
     value: function componentDidMount() {
       this.configureFileForm();
+
+      // Allow user to drag anywhere in the window
+      window.addEventListener("dragover", this.onWindowDragOver, false);
+      window.addEventListener("drop", this.onWindowDrop, false);
     }
   }, {
-    key: "reset",
-    value: function reset() {
-      this.setState({ rawData: null, decryptedItems: null, requestPassword: false });
+    key: "componentWillUnmount",
+    value: function componentWillUnmount() {
+      window.removeEventListener("dragover", this.onWindowDragOver, false);
+      window.removeEventListener("drop", this.onWindowDrop, false);
     }
   }, {
     key: "configureFileForm",
     value: function configureFileForm() {
       var _this2 = this;
 
-      var dropContainer = document.getElementById("drop-container");
-      var fileInput = document.getElementById("file-input");
+      var fileInput = this.fileInput;
+      var dropContainer = this.dropContainer;
       if (!fileInput) {
         return;
       }
 
-      var onEnter = function onEnter() {
-        dropContainer.classList.add('is-dragover');
-      };
-
-      var onExit = function onExit() {
-        dropContainer.classList.remove('is-dragover');
-      };
-
-      // Allow user to drag anywhere in the window
-      window.addEventListener("dragover", function (e) {
-        onEnter();
-        e = e || event;
-        e.preventDefault();
-      }, false);
-
-      window.addEventListener("drop", function (evt) {
-        onExit();
-        dropContainer.classList.add('is-uploading');
-        fileInput.files = evt.dataTransfer.files;
-        evt.preventDefault();
-      }, false);
-
       fileInput.onchange = function (event) {
+        // On firefox, this event doesnt get triggered. INstead we handle it on window.addEventListener("drop")
+        // Which gets called on all browsers
         var files = event.target.files;
-        var reader = new FileReader();
-        reader.onload = function (e) {
-          var data = JSON.parse(e.target.result);
-          _this2.previewData(data);
-        };
-
-        reader.readAsText(files[0]);
+        if (!_this2.handledFiles) {
+          _this2.handleDroppedFiles(files);
+        }
       };
 
       dropContainer.ondragover = dropContainer.ondragenter = function (evt) {
-        onEnter();
+        _this2.dropContainerOnEnter();
         evt.preventDefault();
       };
 
-      dropContainer.ondragleave = dropContainer.ondragend = onExit;
+      dropContainer.ondragleave = dropContainer.ondragend = this.dropContainerOnEnter;
+    }
+  }, {
+    key: "reset",
+    value: function reset() {
+      this.setState({ rawData: null, decryptedItems: null, requestPassword: false });
     }
   }, {
     key: "previewData",
@@ -2758,6 +2780,16 @@ var BackupExplorer = function (_React$Component) {
             _this4.recoverItems(items);
           } })
       );
+    }
+  }, {
+    key: "dropContainer",
+    get: function get() {
+      return document.getElementById("drop-container");
+    }
+  }, {
+    key: "fileInput",
+    get: function get() {
+      return document.getElementById("file-input");
     }
   }]);
 
