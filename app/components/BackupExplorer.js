@@ -136,6 +136,14 @@ export default class BackupExplorer extends React.Component {
         if(typeof item.content == "string") {
           item.content = JSON.parse(item.content);
         }
+
+        if(typeof item.created_at == "string") {
+          item.created_at = new Date(item.created_at);
+        }
+
+        if(typeof item.updated_at == "string") {
+          item.updated_at = new Date(item.updated_at);
+        }
       } catch(error) {
         errorCount++;
         console.error("Error decrypting:", error);

@@ -73,7 +73,7 @@ export class ItemsTable extends React.Component {
                     )}
                   </tr>
                 }
-                
+
                 {array && array.map((item, index) =>
                   <ItemRow
                     key={item.uuid}
