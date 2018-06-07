@@ -154,7 +154,7 @@ tr {
   box-sizing: border-box; }
 
 .sn-component .panel .footer .left, .sn-component .panel .panel-footer .left {
-  text-align: right;
+  text-align: left;
   display: block; }
 
 .sn-component .panel .footer .right, .sn-component .panel .panel-footer .right {
@@ -338,7 +338,10 @@ tr {
   color: #086DD6; }
 
 .sn-component .selectable {
-  user-select: text !important; }
+  user-select: text !important;
+  -ms-user-select: text !important;
+  -moz-user-select: text !important;
+  -webkit-user-select: text !important; }
 
 .sn-component h1, .sn-component h2, .sn-component h3, .sn-component h4, .sn-component h5 {
   margin: 0;
@@ -370,6 +373,9 @@ tr {
 .sn-component a {
   cursor: pointer; }
 
+.sn-component a.disabled {
+  color: #DDDDDD; }
+
 .sn-component .wrap {
   word-wrap: break-word; }
 
@@ -384,6 +390,18 @@ tr {
 
 .sn-component *.success {
   color: #2B9612; }
+
+.sn-component *.info-i {
+  color: #086DD6 !important; }
+
+.sn-component *.warning-i {
+  color: #f6a200 !important; }
+
+.sn-component *.danger-i {
+  color: #F80324 !important; }
+
+.sn-component *.success-i {
+  color: #2B9612 !important; }
 
 .sn-component *.clear {
   background-color: transparent;
@@ -462,7 +480,8 @@ tr {
   text-align: center; }
 
 .sn-component .button-group .button, .sn-component .button-group .box, .sn-component .button-group .circle {
-  display: inline-block; }
+  display: inline-block;
+  vertical-align: middle; }
 
 .sn-component .button-group .button:not(:last-child), .sn-component .button-group .box:not(:last-child), .sn-component .button-group .circle:not(:last-child) {
   margin-right: 5px; }
