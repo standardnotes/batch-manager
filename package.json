@@ -1,6 +1,6 @@
 {
   "name": "sn-batch-manager",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "dist/dist.js",
   "scripts": {
     "lint": "eslint --cache --ignore-path .gitignore --ext .jsx,.js --format=node_modules/eslint-formatter-pretty .",
@@ -48,6 +48,6 @@
     "webpack": "^3.8.1",
     "webpack-dev-server": "^2.9.7",
     "sn-stylekit": "1.0.12",
-    "standard-file-js": "0.0.12"
+    "standard-file-js": "0.3.0"
   }
 }

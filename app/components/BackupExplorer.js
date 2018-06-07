@@ -1,7 +1,9 @@
 import React from 'react';
 import BridgeManager from "../lib/BridgeManager.js";
 import BackupItemsList from "./BackupItemsList.js";
-import 'standard-file-js';
+
+import "standard-file-js/dist/regenerator.js";
+import { StandardFile } from 'standard-file-js';
 
 export default class BackupExplorer extends React.Component {
 
@@ -108,9 +110,8 @@ export default class BackupExplorer extends React.Component {
 
   onPasswordSubmit() {
     var params = this.state.rawData.auth_params;
-    params.password = this.state.password;
 
-    SFJS.crypto.computeEncryptionKeysForUser(params, (keys) => {
+    SFJS.crypto.computeEncryptionKeysForUser(this.state.password, params).then((keys) => {
       this.decryptItems(this.state.rawData.items, keys, (decryptedItems, errorCount) => {
         if(errorCount == this.state.rawData.items.length) {
           // All items unable to be decrypted, ask for password
@@ -127,12 +128,12 @@ export default class BackupExplorer extends React.Component {
     })
   }
 
-  decryptItems(items, keys, completion) {
+  async decryptItems(items, keys, completion) {
     var processedItems = [];
     var errorCount = 0;
     for(var item of items) {
       try {
-        SFItemTransformer.decryptItem(item, keys);
+        await SFJS.itemTransformer.decryptItem(item, keys);
         if(typeof item.content == "string") {
           item.content = JSON.parse(item.content);
         }
