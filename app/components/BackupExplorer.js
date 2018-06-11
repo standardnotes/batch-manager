@@ -147,11 +147,13 @@ export default class BackupExplorer extends React.Component {
         }
       } catch(error) {
         errorCount++;
-        console.error("Error decrypting:", error);
+        console.error("Error decrypting item", item, "error", error);
         continue;
       }
 
-      processedItems.push(item);
+      if(item.content && !item.errorDecrypting) {
+        processedItems.push(item);
+      }
     }
 
     completion(processedItems, errorCount);

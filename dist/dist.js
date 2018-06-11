@@ -719,6 +719,11 @@ var ItemRow = exports.ItemRow = function (_React$Component3) {
       var capitalizeFirstLetter = function capitalizeFirstLetter(string) {
         return string.charAt(0).toUpperCase() + string.slice(1);
       };
+
+      if (!obj) {
+        return _react2.default.createElement("div", null);
+      }
+
       return _react2.default.createElement(
         "div",
         null,
@@ -2723,12 +2728,14 @@ var BackupExplorer = function (_React$Component) {
                 _context.t0 = _context["catch"](9);
 
                 errorCount++;
-                console.error("Error decrypting:", _context.t0);
+                console.error("Error decrypting item", item, "error", _context.t0);
                 return _context.abrupt("continue", 23);
 
               case 22:
 
-                processedItems.push(item);
+                if (item.content && !item.errorDecrypting) {
+                  processedItems.push(item);
+                }
 
               case 23:
                 _iteratorNormalCompletion = true;

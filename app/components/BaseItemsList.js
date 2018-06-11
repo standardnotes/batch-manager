@@ -101,6 +101,13 @@ export class ItemRow extends React.Component {
     const capitalizeFirstLetter = (string) => {
       return string.charAt(0).toUpperCase() + string.slice(1);
     }
+
+    if(!obj) {
+      return (
+        <div/>
+      )
+    }
+
     return (
       <div>
         {Object.keys(obj).map((key) =>
