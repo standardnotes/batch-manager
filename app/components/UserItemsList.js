@@ -14,10 +14,13 @@ export default class UserItemsList extends BaseItemsList {
   }
 
   deleteSelected() {
-    BridgeManager.get().deleteItems(this.state.selectedItems);
-
-    for(var item of this.props.items) { item.selected = false; }
-    this.setState({selectedItems: [], selectState: false});
+    BridgeManager.get().deleteItems(this.state.selectedItems, (response) => {
+      var deleted = response.deleted;
+      if(deleted) {
+        for(var item of this.props.items) { item.selected = false; }
+        this.setState({selectedItems: [], selectState: false});
+      }
+    });
   }
 
   cleanDuplicates() {

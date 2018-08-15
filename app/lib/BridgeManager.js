@@ -100,8 +100,8 @@ export default class BridgeManager {
     return -1;
   }
 
-  deleteItems(items) {
-    this.componentManager.deleteItems(items);
+  deleteItems(items, callback) {
+    this.componentManager.deleteItems(items, callback);
   }
 
   removeItemFromItems(item) {

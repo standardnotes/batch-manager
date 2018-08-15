@@ -23,7 +23,7 @@ export class BaseItemsList extends React.Component {
       item.selected = selectState;
     }
 
-    this.setState({selectState: selectState, selectedItems: selectState ? this.props.items : []})
+    this.setState({selectState: selectState, selectedItems: selectState ? this.props.items.slice() : []})
   }
 
   toggleSelection(item) {
