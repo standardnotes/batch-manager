@@ -51,13 +51,15 @@ export default class UserItemsList extends BaseItemsList {
     }
 
     const areDuplicates = (a, b) => {
+      if(a == b) {
+        return false;
+      }
+
       if(a.content_type !== b.content_type) {
         return false;
       }
-      var keysToOmit = ["references"];
-      var aString = JSON.stringify(omitKeys(a.content, keysToOmit));
-      var bString = JSON.stringify(omitKeys(b.content, keysToOmit));
-      return aString == bString;
+
+      return a.isItemContentEqualWith(b);
     }
 
     let items = this.props.items;

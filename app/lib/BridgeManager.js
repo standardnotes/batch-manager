@@ -1,4 +1,5 @@
 import ComponentManager from 'sn-components-api';
+import DuplicateItem from "./DuplicateItem"
 
 export default class BridgeManager {
 
@@ -62,8 +63,12 @@ export default class BridgeManager {
 
   beginStreamingItems() {
     this._didBeginStreaming = true;
-    this.componentManager.streamItems(["Note", "Tag", "SN|Component", "SN|Theme", "SF|Extension", "Extension", "SF|MFA", "SN|Editor"], (items) => {
+    let contentTypes = ["Note", "Tag", "SN|Component", "SN|Theme", "SF|Extension", "Extension", "SF|MFA", "SN|Editor"];
+    this.componentManager.streamItems(contentTypes, (items) => {
       for(var item of items) {
+
+        item = new DuplicateItem(item);
+
         if(item.deleted) {
           this.removeItemFromItems(item);
           continue;
