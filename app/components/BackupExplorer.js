@@ -190,7 +190,7 @@ export default class BackupExplorer extends React.Component {
     return (
       <div id="backups">
             {(this.state.requestPassword || !this.state.decryptedItems) &&
-              <div id="drop-container" className="notification info dashed">
+              <div id="drop-container" className="sk-notification info dashed">
 
                 {!this.state.requestPassword && !this.state.decryptedItems &&
                   <div>
@@ -209,7 +209,7 @@ export default class BackupExplorer extends React.Component {
                     <input
                       autoFocus={true}
                       id="password-input"
-                      className="info clear center-text"
+                      className="info clear center-text sk-input"
                       placeholder="Password"
                       type={"password"}
                       value={this.state.password}

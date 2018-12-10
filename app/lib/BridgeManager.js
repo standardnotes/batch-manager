@@ -31,8 +31,6 @@ export default class BridgeManager {
       onReady && onReady();
     });
 
-    this.componentManager.acceptsThemes = false;
-
     this.componentManager.setSize("content", "90%", "90%");
   }
 

@@ -1,5 +1,5 @@
 html, body {
-  font-size: 16px;
+  font-size: var(--sn-stylekit-base-font-size);
   margin: 0;
   padding: 0;
   height: 100%;
@@ -12,8 +12,9 @@ html, body {
 .sn-component {
   user-select: auto !important;
 
-  .button-group .button {
+  .sk-button-group .sk-button {
     vertical-align: middle;
+    user-select: none;
   }
 }
 
@@ -27,29 +28,28 @@ table {
   overflow: auto;
   border-collapse: collapse;
   border-spacing: 0px;
-  border-color: grey;
+  border-color: var(--sn-stylekit-border-color);
   margin-bottom: 15px;
   table-layout: fixed;
 
   th, td {
     padding: 6px 13px;
-    border: 1px solid #dfe2e5;
+    border: 1px solid var(--sn-stylekit-border-color);
     overflow-x: scroll;
   }
 
   tr:nth-child(2n) {
-    background-color: #f6f6f6;
+    background-color: var(--sn-stylekit-contrast-background-color);
   }
 }
 
-.table-item {
+.sk-panel-table-item {
   &.selected {
-    background-color: rgba(8, 109, 214, 0.1);
+    background-color: var(--sn-stylekit-info-color);
+    color: var(--sn-stylekit-info-contrast-color);
   }
   .selection-column {
     width: 1% !important;
-    // width: 20px;
-    // max-width: 20px;
     label {
       text-align: center;
     }
@@ -63,7 +63,7 @@ table {
     max-height: 100px;
     overflow-y: scroll;
 
-    .content-item {
+    .sk-panel-table-content-item {
       margin-top: 4px;
       margin-bottom: 8px;
 
@@ -93,7 +93,7 @@ tr {
 }
 
 .categories-options {
-  border-bottom: 1px solid rgba(black, 0.1);
+  border-bottom: 1px solid var(--sn-stylekit-border-color);
   padding-bottom: 15px !important;
   margin-bottom: 5px;
 }
@@ -125,11 +125,9 @@ tr {
     }
 
     #password-input {
-      background-color: rgba(white, 0.5);
       border-radius: 0px;
       margin-top: 10px;
       font-size: 15px;
-      border: 1px solid rgb(8, 109, 214);
     }
 
     .uploading {

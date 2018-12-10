@@ -60,8 +60,8 @@ export class ItemsTable extends React.Component {
     let columns = this.columns;
 
     return (
-      <div className="panel-section">
-        <div className="panel-section">
+      <div className="sk-panel-section">
+        <div className="sk-panel-section">
 
             {this.props.itemGroups.map((array, index) =>
               <table>
@@ -112,7 +112,7 @@ export class ItemRow extends React.Component {
       <div>
         {Object.keys(obj).map((key) =>
           (obj[key] && typeof(obj[key]) !== 'object' &&
-            <div className="content-item" key={key}>
+            <div className="sk-panel-table-content-item" key={key}>
               <strong className="key">{capitalizeFirstLetter(key)}: </strong>
               <span className="body">{typeof(obj[key]) == "boolean" ? JSON.stringify(obj[key]) : obj[key]}</span>
             </div>
@@ -144,7 +144,7 @@ export class ItemRow extends React.Component {
   render() {
     var item = this.props.item;
     return (
-      <tr className={"table-item " + (item.selected ? "selected" : "")}>
+      <tr className={"sk-panel-table-item " + (item.selected ? "selected" : "")}>
         <td className="selection-column">
           <label>
             <input type="checkbox"

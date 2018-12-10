@@ -115,42 +115,50 @@ export default class UserItemsList extends BaseItemsList {
     var itemGroups = this.state.duplicatesMode ? this.state.duplicates : [this.props.items];
 
     return (
-      <div className="panel-section">
+      <div className="sk-panel-section">
 
-        <div className="panel-row">
-          <div className="context-options panel-row button-group">
+        <div className="sk-panel-row">
+          <div className="context-options sk-panel-row sk-button-group">
 
             {!this.state.duplicatesMode &&
-              <div className={"button default"} onClick={() => {this.toggleSelectAll()}}>
-                {this.state.selectState ? "Deselect All" : "Select All"}
+              <div className={"sk-button neutral"} onClick={() => {this.toggleSelectAll()}}>
+                <div className="sk-label">
+                  {this.state.selectState ? "Deselect All" : "Select All"}
+                </div>
               </div>
             }
 
             {selectedCount > 0 &&
-              <div className={"button " + (selectedCount > 0 ? "danger" : "default")} onClick={() => {this.deleteSelected()}}>
-                {`Delete ${selectedCount} Items`}
+              <div className={"sk-button " + (selectedCount > 0 ? "danger" : "neutral")} onClick={() => {this.deleteSelected()}}>
+                <div className="sk-label">
+                  {`Delete ${selectedCount} Items`}
+                </div>
               </div>
             }
 
-            <div className={"button default"} onClick={() => {this.toggleDuplicates()}}>
-              {this.state.scanningDuplicates &&
-                <div className="spinner small default"/>
-              }
-              {!this.state.scanningDuplicates &&
-                (this.state.duplicatesMode ? "Hide Duplicates" : "Find Duplicates")
-              }
+            <div className={"sk-button neutral"} onClick={() => {this.toggleDuplicates()}}>
+              <div className="sk-label">
+                {this.state.scanningDuplicates &&
+                  <div className="sk-spinner small neutral"/>
+                }
+                {!this.state.scanningDuplicates &&
+                  (this.state.duplicatesMode ? "Hide Duplicates" : "Find Duplicates")
+                }
+              </div>
             </div>
 
             {this.state.duplicatesMode && this.state.duplicates.length > 0 &&
-              <div className={"button danger"} onClick={() => {this.cleanDuplicates()}}>
-                Clean Duplicates
+              <div className={"sk-button danger"} onClick={() => {this.cleanDuplicates()}}>
+                <div className="sk-label">
+                  Clean Duplicates
+                </div>
               </div>
             }
 
           </div>
         </div>
 
-        <div className="panel-section">
+        <div className="sk-panel-section">
           <ItemsTable itemGroups={itemGroups} onSelectionChange={(item) => {this.toggleSelection(item)}} />
         </div>
       </div>

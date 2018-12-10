@@ -42,22 +42,26 @@ export default class Home extends React.Component {
   render() {
 
     return (
-      <div id="home" className="panel static">
-        <div className="content">
+      <div id="home" className="sk-panel static">
+        <div className="sk-panel-content">
 
-          <div className="panel-row categories-options">
+          <div className="sk-panel-row categories-options">
 
-            <div className="button-group ">
+            <div className="sk-button-group">
             {Object.keys(this.state.categories).map((key) =>
-              <div className={"button default " + (key == this.state.selectedCategory ? "info" : "")} key={key} onClick={() => {this.didSelectCategory(key)}}>
-              {BridgeManager.get().humanReadableTitleForExtensionType(key, true)}
+              <div className={"sk-button " + (key == this.state.selectedCategory ? "info" : "neutral")} key={key} onClick={() => {this.didSelectCategory(key)}}>
+                <div className="sk-label">
+                  {BridgeManager.get().humanReadableTitleForExtensionType(key, true)}
+                </div>
               </div>
             )}
             </div>
 
-            <div className="button-group">
-              <div className={"button default " + ("backups" == this.state.selectedCategory ? "info" : "")} onClick={() => {this.didSelectCategory("backups")}}>
-               Backup Explorer
+            <div className="sk-button-group">
+              <div className={"sk-button " + ("backups" == this.state.selectedCategory ? "info" : "neutral")} onClick={() => {this.didSelectCategory("backups")}}>
+                <div className="sk-label">
+                  Backup Explorer
+                </div>
               </div>
             </div>
           </div>

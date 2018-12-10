@@ -143,8 +143,6 @@ var BridgeManager = function () {
         onReady && onReady();
       });
 
-      this.componentManager.acceptsThemes = false;
-
       this.componentManager.setSize("content", "90%", "90%");
     }
   }, {
@@ -9482,10 +9480,10 @@ var ItemsTable = exports.ItemsTable = function (_React$Component2) {
 
       return _react2.default.createElement(
         "div",
-        { className: "panel-section" },
+        { className: "sk-panel-section" },
         _react2.default.createElement(
           "div",
-          { className: "panel-section" },
+          { className: "sk-panel-section" },
           this.props.itemGroups.map(function (array, index) {
             return _react2.default.createElement(
               "table",
@@ -9549,7 +9547,7 @@ var ItemRow = exports.ItemRow = function (_React$Component3) {
         Object.keys(obj).map(function (key) {
           return obj[key] && _typeof(obj[key]) !== 'object' && _react2.default.createElement(
             "div",
-            { className: "content-item", key: key },
+            { className: "sk-panel-table-content-item", key: key },
             _react2.default.createElement(
               "strong",
               { className: "key" },
@@ -9596,7 +9594,7 @@ var ItemRow = exports.ItemRow = function (_React$Component3) {
       var item = this.props.item;
       return _react2.default.createElement(
         "tr",
-        { className: "table-item " + (item.selected ? "selected" : "") },
+        { className: "sk-panel-table-item " + (item.selected ? "selected" : "") },
         _react2.default.createElement(
           "td",
           { className: "selection-column" },
@@ -10508,35 +10506,43 @@ var Home = function (_React$Component) {
 
       return _react2.default.createElement(
         "div",
-        { id: "home", className: "panel static" },
+        { id: "home", className: "sk-panel static" },
         _react2.default.createElement(
           "div",
-          { className: "content" },
+          { className: "sk-panel-content" },
           _react2.default.createElement(
             "div",
-            { className: "panel-row categories-options" },
+            { className: "sk-panel-row categories-options" },
             _react2.default.createElement(
               "div",
-              { className: "button-group " },
+              { className: "sk-button-group" },
               Object.keys(this.state.categories).map(function (key) {
                 return _react2.default.createElement(
                   "div",
-                  { className: "button default " + (key == _this2.state.selectedCategory ? "info" : ""), key: key, onClick: function onClick() {
+                  { className: "sk-button " + (key == _this2.state.selectedCategory ? "info" : "neutral"), key: key, onClick: function onClick() {
                       _this2.didSelectCategory(key);
                     } },
-                  _BridgeManager2.default.get().humanReadableTitleForExtensionType(key, true)
+                  _react2.default.createElement(
+                    "div",
+                    { className: "sk-label" },
+                    _BridgeManager2.default.get().humanReadableTitleForExtensionType(key, true)
+                  )
                 );
               })
             ),
             _react2.default.createElement(
               "div",
-              { className: "button-group" },
+              { className: "sk-button-group" },
               _react2.default.createElement(
                 "div",
-                { className: "button default " + ("backups" == this.state.selectedCategory ? "info" : ""), onClick: function onClick() {
+                { className: "sk-button " + ("backups" == this.state.selectedCategory ? "info" : "neutral"), onClick: function onClick() {
                     _this2.didSelectCategory("backups");
                   } },
-                "Backup Explorer"
+                _react2.default.createElement(
+                  "div",
+                  { className: "sk-label" },
+                  "Backup Explorer"
+                )
               )
             )
           ),
@@ -10672,6 +10678,7 @@ var ComponentManager = function () {
 
       this.messageQueue = [];
       this.environment = data.environment;
+      this.platform = data.platform;
       this.uuid = data.uuid;
 
       if (this.onReadyCallback) {
@@ -10864,6 +10871,22 @@ var ComponentManager = function () {
       this.saveItems([item], callback, skipDebouncer);
     }
 
+    /* Presave allows clients to perform any actions last second before the save actually occurs (like setting previews).
+       Saves debounce by default, so if a client needs to compute a property on an item before saving, it's best to
+       hook into the debounce cycle so that clients don't have to implement their own debouncing.
+     */
+
+  }, {
+    key: "saveItemWithPresave",
+    value: function saveItemWithPresave(item, presave, callback) {
+      this.saveItemsWithPresave([item], presave, callback);
+    }
+  }, {
+    key: "saveItemsWithPresave",
+    value: function saveItemsWithPresave(items, presave, callback) {
+      this.saveItems(items, callback, false, presave);
+    }
+
     /*
     skipDebouncer allows saves to go through right away rather than waiting for timeout.
     This should be used when saving items via other means besides keystrokes.
@@ -10875,14 +10898,18 @@ var ComponentManager = function () {
       var _this3 = this;
 
       var skipDebouncer = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-
-      items = items.map(function (item) {
-        item.updated_at = new Date();
-        return this.jsonObjectForItem(item);
-      }.bind(this));
+      var presave = arguments[3];
 
       var saveBlock = function saveBlock() {
-        _this3.postMessage("save-items", { items: items }, function (data) {
+        // presave block allows client to gain the benefit of performing something in the debounce cycle.
+        presave && presave();
+
+        var mappedItems = items.map(function (item) {
+          item.updated_at = new Date();
+          return this.jsonObjectForItem(item);
+        }.bind(_this3));
+
+        _this3.postMessage("save-items", { items: mappedItems }, function (data) {
           callback && callback();
         });
       };
@@ -11453,47 +11480,63 @@ var UserItemsList = function (_BaseItemsList) {
 
       return _react2.default.createElement(
         "div",
-        { className: "panel-section" },
+        { className: "sk-panel-section" },
         _react2.default.createElement(
           "div",
-          { className: "panel-row" },
+          { className: "sk-panel-row" },
           _react2.default.createElement(
             "div",
-            { className: "context-options panel-row button-group" },
+            { className: "context-options sk-panel-row sk-button-group" },
             !this.state.duplicatesMode && _react2.default.createElement(
               "div",
-              { className: "button default", onClick: function onClick() {
+              { className: "sk-button neutral", onClick: function onClick() {
                   _this4.toggleSelectAll();
                 } },
-              this.state.selectState ? "Deselect All" : "Select All"
+              _react2.default.createElement(
+                "div",
+                { className: "sk-label" },
+                this.state.selectState ? "Deselect All" : "Select All"
+              )
             ),
             selectedCount > 0 && _react2.default.createElement(
               "div",
-              { className: "button " + (selectedCount > 0 ? "danger" : "default"), onClick: function onClick() {
+              { className: "sk-button " + (selectedCount > 0 ? "danger" : "neutral"), onClick: function onClick() {
                   _this4.deleteSelected();
                 } },
-              "Delete " + selectedCount + " Items"
+              _react2.default.createElement(
+                "div",
+                { className: "sk-label" },
+                "Delete " + selectedCount + " Items"
+              )
             ),
             _react2.default.createElement(
               "div",
-              { className: "button default", onClick: function onClick() {
+              { className: "sk-button neutral", onClick: function onClick() {
                   _this4.toggleDuplicates();
                 } },
-              this.state.scanningDuplicates && _react2.default.createElement("div", { className: "spinner small default" }),
-              !this.state.scanningDuplicates && (this.state.duplicatesMode ? "Hide Duplicates" : "Find Duplicates")
+              _react2.default.createElement(
+                "div",
+                { className: "sk-label" },
+                this.state.scanningDuplicates && _react2.default.createElement("div", { className: "sk-spinner small neutral" }),
+                !this.state.scanningDuplicates && (this.state.duplicatesMode ? "Hide Duplicates" : "Find Duplicates")
+              )
             ),
             this.state.duplicatesMode && this.state.duplicates.length > 0 && _react2.default.createElement(
               "div",
-              { className: "button danger", onClick: function onClick() {
+              { className: "sk-button danger", onClick: function onClick() {
                   _this4.cleanDuplicates();
                 } },
-              "Clean Duplicates"
+              _react2.default.createElement(
+                "div",
+                { className: "sk-label" },
+                "Clean Duplicates"
+              )
             )
           )
         ),
         _react2.default.createElement(
           "div",
-          { className: "panel-section" },
+          { className: "sk-panel-section" },
           _react2.default.createElement(_BaseItemsList2.ItemsTable, { itemGroups: itemGroups, onSelectionChange: function onSelectionChange(item) {
               _this4.toggleSelection(item);
             } })
@@ -11825,7 +11868,7 @@ var BackupExplorer = function (_React$Component) {
         { id: "backups" },
         (this.state.requestPassword || !this.state.decryptedItems) && _react2.default.createElement(
           "div",
-          { id: "drop-container", className: "notification info dashed" },
+          { id: "drop-container", className: "sk-notification info dashed" },
           !this.state.requestPassword && !this.state.decryptedItems && _react2.default.createElement(
             "div",
             null,
@@ -11860,7 +11903,7 @@ var BackupExplorer = function (_React$Component) {
             _react2.default.createElement("input", {
               autoFocus: true,
               id: "password-input",
-              className: "info clear center-text",
+              className: "info clear center-text sk-input",
               placeholder: "Password",
               type: "password",
               value: this.state.password,
@@ -11941,32 +11984,40 @@ var UserItemsList = function (_BaseItemsList) {
 
       return _react2.default.createElement(
         "div",
-        { className: "panel-section" },
+        { className: "sk-panel-section" },
         _react2.default.createElement(
           "div",
-          { className: "panel-row" },
+          { className: "sk-panel-row" },
           _react2.default.createElement(
             "div",
-            { className: "context-options panel-row button-group" },
+            { className: "context-options sk-panel-row sk-button-group" },
             !this.state.duplicatesMode && _react2.default.createElement(
               "div",
-              { className: "button default", onClick: function onClick() {
+              { className: "sk-button neutral", onClick: function onClick() {
                   _this2.toggleSelectAll();
                 } },
-              this.state.selectState ? "Deselect All" : "Select All"
+              _react2.default.createElement(
+                "div",
+                { className: "sk-label" },
+                this.state.selectState ? "Deselect All" : "Select All"
+              )
             ),
             selectedCount > 0 && _react2.default.createElement(
               "div",
-              { className: "button " + (selectedCount > 0 ? "success" : "default"), onClick: function onClick() {
+              { className: "sk-button " + (selectedCount > 0 ? "success" : "neutral"), onClick: function onClick() {
                   _this2.props.recoverItems(_this2.state.selectedItems);
                 } },
-              "Recover " + selectedCount + " Items"
+              _react2.default.createElement(
+                "div",
+                { className: "sk-label" },
+                "Recover " + selectedCount + " Items"
+              )
             )
           )
         ),
         _react2.default.createElement(
           "div",
-          { className: "panel-section" },
+          { className: "sk-panel-section" },
           _react2.default.createElement(_BaseItemsList2.ItemsTable, { additionalColumns: this.props.additionalColumns, itemGroups: itemGroups, onSelectionChange: function onSelectionChange(item) {
               _this2.toggleSelection(item);
             } })

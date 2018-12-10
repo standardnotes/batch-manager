@@ -1,6 +1,6 @@
 {
   "name": "sn-batch-manager",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "main": "dist/dist.js",
   "scripts": {
     "lint": "eslint --cache --ignore-path .gitignore --ext .jsx,.js --format=node_modules/eslint-formatter-pretty .",
@@ -42,8 +42,8 @@
     "react": "16.x",
     "react-dom": "16.x",
     "sass-loader": "^6.0.6",
-    "sn-components-api": "1.1.8",
-    "sn-stylekit": "1.1.1",
+    "sn-components-api": "1.1.11",
+    "sn-stylekit": "2.0.4",
     "standard-file-js": "0.3.15",
     "style-loader": "~0.13.1",
     "validate-commit-msg": "2.x",
