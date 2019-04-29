@@ -111,10 +111,10 @@ export class ItemRow extends React.Component {
     return (
       <div>
         {Object.keys(obj).map((key) =>
-          (obj[key] && typeof(obj[key]) !== 'object' &&
+          (obj[key] &&
             <div className="sk-panel-table-content-item" key={key}>
               <strong className="key">{capitalizeFirstLetter(key)}: </strong>
-              <span className="body">{typeof(obj[key]) == "boolean" ? JSON.stringify(obj[key]) : obj[key]}</span>
+              <span className="body">{['boolean', 'object'].includes(typeof(obj[key])) ? JSON.stringify(obj[key]) : obj[key]}</span>
             </div>
           )
         )}

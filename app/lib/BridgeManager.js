@@ -74,7 +74,12 @@ export default class BridgeManager {
 
   beginStreamingItems() {
     this._didBeginStreaming = true;
-    let contentTypes = ["Note", "Tag", "SN|Component", "SN|Theme", "SF|Extension", "Extension", "SF|MFA", "SN|Editor"];
+    let contentTypes = [
+      "Note", "Tag", "SN|SmartTag",
+      "SN|Component", "SN|Theme", "SN|UserPreferences",
+      "SF|Extension", "Extension", "SF|MFA", "SN|Editor",
+      "SN|FileSafe|Credentials", "SN|FileSafe|FileMetadata", "SN|FileSafe|Integration"
+    ];
     this.componentManager.streamItems(contentTypes, (items) => {
       for(var item of items) {
 
@@ -138,7 +143,12 @@ export default class BridgeManager {
       "SF|Extension" : "Server Extension",
       "SN|Theme" : "Theme",
       "SN|Editor" : "Editor",
-      "SN|Component" : "Component"
+      "SN|Component" : "Component",
+      "SN|FileSafe|Credentials": "FileSafe Credential",
+      "SN|FileSafe|FileMetadata": "FileSafe File",
+      "SN|FileSafe|Integration": "FileSafe Integration",
+      "SN|SmartTag": "Smart Tag",
+      "SN|UserPreferences": "User Preferences"
     }
 
     var value = mapping[type];
