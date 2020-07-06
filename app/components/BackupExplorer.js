@@ -100,7 +100,7 @@ export default class BackupExplorer extends React.Component {
 
   previewData(data) {
     this.setState({rawData: data});
-    if(data.auth_params) {
+    if(data.auth_params || data.keyParams) {
       // request password
       this.setState({requestPassword: true});
     } else {
@@ -109,7 +109,7 @@ export default class BackupExplorer extends React.Component {
   }
 
   onPasswordSubmit() {
-    var params = this.state.rawData.auth_params;
+    var params = this.state.rawData.auth_params || this.state.rawData.keyParams;
 
     SFJS.crypto.computeEncryptionKeysForUser(this.state.password, params).then((keys) => {
       this.decryptItems(this.state.rawData.items, keys, (decryptedItems, errorCount) => {
