@@ -110,14 +110,31 @@ export class ItemRow extends React.Component {
 
     return (
       <div>
-        {Object.keys(obj).map((key) =>
-          (obj[key] &&
-            <div className="sk-panel-table-content-item" key={key}>
-              <strong className="key">{capitalizeFirstLetter(key)}: </strong>
-              <span className="body">{['boolean', 'object'].includes(typeof(obj[key])) ? JSON.stringify(obj[key]) : obj[key]}</span>
+        {obj.protected
+          ? <>
+            {obj.title && <>
+              <div className="sk-panel-table-content-item">
+                <strong className="key">Title: </strong>
+                <span className="body">{obj.title}</span>
+              </div>
+            </>}
+            <div className="sk-panel-table-content-item">
+              [Protected Content]
             </div>
+          </>
+          : Object.keys(obj).map((key) =>
+            (obj[key] &&
+              <div className="sk-panel-table-content-item" key={key}>
+                <strong className="key">{capitalizeFirstLetter(key)}: </strong>
+                <span className="body">{
+                  ['boolean', 'object'].includes(typeof(obj[key]))
+                    ? JSON.stringify(obj[key])
+                    : obj[key]
+                }</span>
+              </div>
+            )
           )
-        )}
+        }
       </div>
     )
   }
