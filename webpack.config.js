@@ -1,20 +1,18 @@
-const webpack = require('webpack');
 const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const uglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
   entry: {
     "dist.js" : path.resolve(__dirname, 'app/main.js'),
     "dist.min.js" : path.resolve(__dirname, 'app/main.js'),
-    "dist.css" : path.resolve(__dirname, 'app/stylesheets/main.scss'),
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
     publicPath: '/',
     filename: './[name]'
   },
+  devtool: 'source-map',
   devServer: {
     historyApiFallback: true,
     watchOptions: { aggregateTimeout: 300, poll: 1000 },
@@ -25,26 +23,16 @@ module.exports = {
     }
   },
   module: {
-    loaders: [
-      { test: /\.css$/, include: path.resolve(__dirname, 'app'), loader: 'style-loader!css-loader' },
+    rules: [
       {
-        test: /\.scss$/,
-        exclude: /node_modules/,
-        use: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: [
-            'css-loader',
-            { loader: 'sass-loader', query: { sourceMap: false } },
-          ],
-          publicPath: '../'
-        }),
+        test: /\.s[ac]ss$/i,
+        use: [
+          MiniCssExtractPlugin.loader,
+          'css-loader',
+          'sass-loader',
+        ],
       },
-      { test: /\.js[x]?$/, include: [
-        path.resolve(__dirname, 'app'),
-        // These lines have no effect. These files are instead imported using the import syntax inside js files.
-        // path.resolve(__dirname, 'node_modules/sn-components-api/dist/dist.js'),
-        // path.resolve(__dirname, 'node_modules/standard-file-js/dist/sfjs.min.js'),
-      ], exclude: /node_modules/, loader: 'babel-loader' }
+      { test: /\.js[x]?$/, loader: 'babel-loader' }
     ]
   },
   resolve: {
@@ -54,30 +42,14 @@ module.exports = {
     }
   },
   plugins: [
-    function() {
-      this.plugin("done", function(stats) {
-        // console.log("done", stats);
-        if (stats.compilation.errors && stats.compilation.errors.length &&
-process.argv.indexOf("--watch") == -1) {
-          console.log(stats.compilation.errors);
-          process.exit(1);
-        }
-      });
-    },
-
-    new ExtractTextPlugin({ filename: './dist.css', disable: false, allChunks: true}),
-    new uglifyJsPlugin({
-      include: /\.min\.js$/,
-      minimize: true
+    new MiniCssExtractPlugin({
+      filename: "dist.css",
+      chunkFilename: "[name].css",
     }),
-    new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: JSON.stringify('production')
-      }
-    }),
-    new CopyWebpackPlugin([
+    new CopyWebpackPlugin({
+      patterns: [
       { from: './app/index.html', to: 'index.html' },
       { from: './app/index.min.html', to: 'index.min.html' },
-    ])
+    ]})
   ]
 };
